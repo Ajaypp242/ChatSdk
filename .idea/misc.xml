@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.19444444444444445" />
+        <entry key="../../ChatSdk/Demo/app/src/main/res/layout/activity_main.xml" value="0.25277777777777777" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/edit_text_border.xml" value="0.1665" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/opertator_chat_bubble.xml" value="0.1665" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/send_btn_background.xml" value="0.2725" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/visitor_chat_bubble.xml" value="0.1665" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/activity_chat.xml" value="0.25" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/activity_pre_post.xml" value="0.24512820512820513" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/chat_item.xml" value="0.25" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/custom_toolbar.xml" value="0.20260416666666667" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/operator_chat_view.xml" value="0.27447916666666666" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/pre_post_item.xml" value="0.335" />
+        <entry key="chat_sdk/src/main/res/layout-v28/custom_toolbar.xml" value="0.1" />
+        <entry key="chat_sdk/src/main/res/layout/activity_chat.xml" value="0.25" />
+        <entry key="chat_sdk/src/main/res/layout/activity_pre_post.xml" value="0.1" />
+        <entry key="chat_sdk/src/main/res/layout/chat_item.xml" value="0.20625" />
+        <entry key="chat_sdk/src/main/res/layout/custom_toolbar.xml" value="0.1" />
+        <entry key="chat_sdk/src/main/res/layout/fragment_bubble.xml" value="0.25" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
