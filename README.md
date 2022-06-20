@@ -1,2 +1,1 @@
-# ChatSdk
-[![](https://jitpack.io/v/Ajaypp242/ToastLibrary.svg)](https://jitpack.io/#Ajaypp242/ToastLibrary)
+[![](https://jitpack.io/v/Ajaypp242/ChatSdk.svg)](https://jitpack.io/#Ajaypp242/ChatSdk)
