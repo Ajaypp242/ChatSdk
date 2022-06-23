@@ -1,5 +1,6 @@
 package com.chat.demo
 
+import android.graphics.Color
 import com.chat.sdk.ProProfsChat
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
