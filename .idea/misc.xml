@@ -6,14 +6,19 @@
         <entry key="../../../../../../layout/custom_preview.xml" value="0.19444444444444445" />
         <entry key="../../ChatSdk/Demo/app/src/main/res/layout/activity_main.xml" value="0.25277777777777777" />
         <entry key="../../ChatSdk/Demo/app/src/main/res/layout/activity_main2.xml" value="0.24270833333333333" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/bar_bubble_bg.xml" value="0.1245" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/circular_bubble_bg.xml" value="0.1" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/edit_text_border.xml" value="0.1665" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/opertator_chat_bubble.xml" value="0.1665" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/send_btn_background.xml" value="0.2725" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/visitor_chat_bubble.xml" value="0.1665" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/activity_chat.xml" value="0.25" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/activity_pre_post.xml" value="0.24512820512820513" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/bubble_bar.xml" value="0.24791666666666667" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/chat_item.xml" value="0.25" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/custom_toolbar.xml" value="0.20260416666666667" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/field_type_text.xml" value="0.2421875" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/field_type_textarea.xml" value="0.2421875" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/operator_chat_view.xml" value="0.27447916666666666" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/pre_post_item.xml" value="0.335" />
         <entry key="chat_sdk/src/main/res/layout-v28/custom_toolbar.xml" value="0.1" />

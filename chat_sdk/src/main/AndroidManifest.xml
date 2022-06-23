@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.chat.chat_sdk">
+    package="com.chat.sdk">
 
-    <application
-
-        >
+    <application>
         <activity
-            android:name=".activity.chat.ChatActivity"
+            android:name="com.chat.sdk.activity.chat.ChatActivity"
             android:theme="@style/Theme.ChatSDK"/>
         <activity
-            android:name=".activity.pre_post_chat.PrePostActivity"
+            android:name="com.chat.sdk.activity.pre_post_chat.PrePostActivity"
             android:theme="@style/Theme.ChatSDK" />
     </application>
 
