@@ -11,7 +11,6 @@
 
     <style name="Theme.ChatSDK" parent="Theme.MaterialComponents.Light">
         <!-- Primary brand color. -->
-        <item name="android:forceDarkAllowed">true</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>

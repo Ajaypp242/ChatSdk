@@ -1,9 +1,6 @@
 package com.chat.sdk.network
 
-import com.chat.sdk.modal.ChatData
-import com.chat.sdk.modal.ChatSettingData
-import com.chat.sdk.modal.PreChatResponse
-import com.chat.sdk.modal.VisitorMessageResponse
+import com.chat.sdk.modal.*
 import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.http.*
@@ -42,7 +39,9 @@ interface ApiClient {
         @Field("AccountCode") AccountCode: String,
         @Field("DepartmentRouting") DepartmentRouting: String,
         @Field("ProProfs_Chat_l2s_cv") ProProfs_Chat_l2s_cv: String,
-        @Field("ProProfs_Current_URL_manual") ProProfs_Current_URL_manual: String
+        @Field("ProProfs_Current_URL_manual") ProProfs_Current_URL_manual: String,
+        @FieldMap others_string:HashMap<String, String>,
+        @FieldMap others_array:HashMap<String, ArrayList<String>>
     ):Response<PreChatResponse>
 
     @FormUrlEncoded
@@ -72,7 +71,6 @@ interface ApiClient {
     @Field("pp_department_offline_label") pp_department_offline_label:String,
     @Field("off_pp_visitor_name") off_pp_visitor_name:String,
     @Field("off_pp_visitor_email") off_pp_visitor_email:String,
-    @Field("off_pp_fld_3") off_pp_fld_3:String,
     @Field("off_ProProfs_field_counter") off_ProProfs_field_counter:String,
     @Field("ProProfs_device_id") ProProfs_device_id:String,
     @Field("AccountCode") AccountCode:String,

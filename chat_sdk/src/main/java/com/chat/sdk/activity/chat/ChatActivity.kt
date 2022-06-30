@@ -43,8 +43,8 @@ class ChatActivity : AppCompatActivity() {
         siteId = intent.getStringExtra("site_id").toString()
 
         val layoutManager = LinearLayoutManager(applicationContext)
-        activityChatBinding.chatRecylerView.layoutManager = layoutManager
-        activityChatBinding.chatRecylerView.adapter = adapter
+        activityChatBinding.chatRecyclerView.layoutManager = layoutManager
+        activityChatBinding.chatRecyclerView.adapter = adapter
         activityChatBinding.sendBtn.setOnClickListener {
             sendMessage(activityChatBinding.messageBox.text.toString())
             activityChatBinding.messageBox.setText("")
@@ -82,7 +82,7 @@ class ChatActivity : AppCompatActivity() {
                     adapter.addChatList(it)
                 }
                 messageCounter = it[it.size - 1].sno
-                activityChatBinding.chatRecylerView.scrollToPosition(adapter.itemCount - 1)
+                activityChatBinding.chatRecyclerView.scrollToPosition(adapter.itemCount - 1)
             }
         }
 
@@ -92,7 +92,7 @@ class ChatActivity : AppCompatActivity() {
             } else {
                 adapter.addChatList(it)
             }
-            activityChatBinding.chatRecylerView.scrollToPosition(adapter.itemCount - 1)
+            activityChatBinding.chatRecyclerView.scrollToPosition(adapter.itemCount - 1)
         }
     }
 

@@ -10,7 +10,6 @@
 <!--    </style>-->
 
     <style name="Theme.ChatSDK" parent="Theme.MaterialComponents.DayNight">
-        <item name="android:forceDarkAllowed">true</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>

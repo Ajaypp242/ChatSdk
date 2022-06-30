@@ -1,0 +1,48 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="24dp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fld_name"
+            android:textColor="@color/form_title"
+            android:textSize="@dimen/form_title_size" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/required_icon"
+            android:id="@+id/required_icon"
+            android:visibility="gone"
+            android:layout_marginLeft="2dp"
+            android:textColor="@color/error_msg"
+            android:layout_marginStart="2dp" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/value"
+        android:text="@string/select"
+        android:background="@drawable/edit_text_border"
+        android:layout_marginTop="6dp"
+        android:padding="12dp"
+        app:drawableRightCompat="@android:drawable/arrow_down_float" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textSize="@dimen/form_error_msg_size"
+        android:textColor="@color/error_msg"
+        android:id="@+id/err_msg"
+        android:layout_marginTop="4dp"
+        />
+</LinearLayout>

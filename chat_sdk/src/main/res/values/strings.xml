@@ -1,1 +1,7 @@
-<resources></resources>
+<resources>
+    <string name="chat">Chat</string>
+    <string name="help">Help</string>
+    <string name="required_icon">*</string>
+    <string name="select">Select</string>
+    <string name="type">Type Something…</string>
+</resources>

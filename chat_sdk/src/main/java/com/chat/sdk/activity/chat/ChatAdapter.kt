@@ -53,10 +53,10 @@ class ChatAdapter() : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (messages?.get(position)?.v_o == "v") {
-            return visitorMessageView
+        return if (messages?.get(position)?.v_o == "v") {
+            visitorMessageView
         } else {
-            return operatorMessageView
+            operatorMessageView
         }
     }
 }

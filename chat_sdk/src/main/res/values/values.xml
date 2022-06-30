@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    Circular Layout Properties-->
-    <dimen name="circular_bubble_width">10</dimen>
-    <dimen name="circular_bubble_height">300dp</dimen>
 <!--    Resources IDs-->
     <item name="status" type="id"/>
-
+    <item name="bubble" type="id"/>
+    <item name="bubble_icon" type="id"/>
+    <item name="bubble_layout" type="id"/>
 </resources>

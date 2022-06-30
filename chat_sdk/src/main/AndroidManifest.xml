@@ -7,7 +7,7 @@
             android:name="com.chat.sdk.activity.chat.ChatActivity"
             android:theme="@style/Theme.ChatSDK"/>
         <activity
-            android:name="com.chat.sdk.activity.pre_post_chat.PrePostActivity"
+            android:name="com.chat.sdk.activity.form.FormActivity"
             android:theme="@style/Theme.ChatSDK" />
     </application>
 
