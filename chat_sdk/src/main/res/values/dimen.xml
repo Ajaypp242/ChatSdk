@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="form_title_size">16sp</dimen>
+    <dimen name="font_18">18sp</dimen>
+    <dimen name="font_24">24sp</dimen>
+    <dimen name="font_20">20sp</dimen>
+    <dimen name="message_text_size">16sp</dimen>
     <dimen name="form_error_msg_size">12sp</dimen>
 </resources>

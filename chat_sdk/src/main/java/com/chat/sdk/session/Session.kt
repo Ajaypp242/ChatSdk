@@ -3,32 +3,20 @@ package com.chat.sdk.session
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
+import com.chat.sdk.util.Constant
+import kotlinx.coroutines.awaitAll
 
-class Session {
-    private var sharedPreferences: SharedPreferences? = null
-    private val PREFERENCE_NAME = "chat_sdk_preference"
-
-    companion object{
-         const val time = 6000
-    }
-
-
-
-    fun init(context: Context) {
-        if (sharedPreferences == null) {
-            sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
-        }
-    }
+class Session(private val sharedPreferences: SharedPreferences) {
 
     @SuppressLint("CommitPrefEdits")
-    fun setSessionData(key: String, value: String?) {
-        with(sharedPreferences?.edit()) {
-            this?.putString(key, value)
-            this?.apply()
-        }
+    fun setKey(key: String, value: String?) {
+        val editor = sharedPreferences.edit()
+        editor.putString(key, value)
+        editor.apply()
     }
 
-    fun getSessionData(key: String): String? {
-        return sharedPreferences?.getString(key,null)
+    fun getKey(key: String): String? {
+        return sharedPreferences.getString(key, "")
     }
 }

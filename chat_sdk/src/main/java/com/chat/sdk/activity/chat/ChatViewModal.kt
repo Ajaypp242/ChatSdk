@@ -3,9 +3,11 @@ package com.chat.sdk.activity.chat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.chat.sdk.modal.ChatData
 import com.chat.sdk.modal.Message
-import com.chat.sdk.network.ApiAdapter
+import com.chat.sdk.network.GetChatData
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 
 class ChatViewModal : ViewModel() {
     private val errorMessage = MutableLiveData<String>()
@@ -13,30 +15,13 @@ class ChatViewModal : ViewModel() {
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
     }
-    val messages = MutableLiveData<ArrayList<Message>>()
+    val chatData = MutableLiveData<ChatData>()
     val visitorMessage = MutableLiveData<ArrayList<Message>>()
 
-    fun getChats(
-        siteId: String,
-        proprofs_language_id: String,
-        proprofs_session: String,
-        messageCounter: String,
-        visitorName: String,
-        visitorEmail: String
-    ) {
+    init {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = ApiAdapter.apiClient.getChat(
-                siteId, proprofs_language_id, proprofs_session, messageCounter,
-                "330", "1", "chat_sdk", "0",
-                visitorName,
-                visitorEmail, ""
-            )
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    messages.postValue(response.body()?.messages)
-                } else {
-                    onError("Error : ${response.message()} ")
-                }
+            GetChatData.chatDataSharedFlow.collect { value ->
+                chatData.postValue(value)
             }
         }
     }
@@ -50,7 +35,7 @@ class ChatViewModal : ViewModel() {
         job?.cancel()
     }
 
-    fun addMessage(chat: ArrayList<Message>){
+    fun addMessage(chat: ArrayList<Message>) {
         visitorMessage.postValue(chat)
     }
 }

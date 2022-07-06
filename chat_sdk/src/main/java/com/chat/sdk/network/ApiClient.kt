@@ -11,7 +11,7 @@ interface ApiClient {
     suspend fun getData(
         @Field("site_id") site_id: String,
         @Field("proprofs_language_id") proprofs_language_id: String,
-        @Field("ProProfs_Session") ProProfs_Session: String,
+        @Field("ProProfs_Session") ProProfs_Session: String?,
         @Field("ProProfs_Current_URL") ProProfs_Current_URL: String,
         @Field("ProProfs_refferal_URL") ProProfs_refferal_URL: String,
         @Field("ProProfs_device_id") ProProfs_device_id: String,
@@ -26,9 +26,9 @@ interface ApiClient {
     @FormUrlEncoded
     @POST("prechat")
     suspend fun preChat(
-        @Field("ProProfs_session") ProProfs_session: String?,
+        @Field("ProProfs_session") ProProfs_session: String,
         @Field("ProProfs_language_id") ProProfs_language_id: String?,
-        @Field("ProProfs_site_id") ProProfs_site_id: String?,
+        @Field("ProProfs_site_id") ProProfs_site_id: String,
         @Field("pp_operator_label") pp_operator_label: String,
         @Field("pp_group_label") pp_group_label: String,
         @Field("pp_department_label") pp_department_label: String,
@@ -60,7 +60,6 @@ interface ApiClient {
         @Field("ProProfs_typing_message") ProProfs_typing_message: String
     ):Response<ChatData>
 
-
     @FormUrlEncoded
     @POST("offlinemessage")
     suspend fun sendOfflineMessage(
@@ -77,14 +76,12 @@ interface ApiClient {
     @Field("DepartmentRouting1") DepartmentRouting1:String,
     @Field("ProProfs_Current_URL_manual") ProProfs_Current_URL_manual:String, ):Response<JSONObject>
 
-
     @FormUrlEncoded
     @POST("send_visitor_message")
     suspend fun sendVisitorMessage(
         @Field("ProProfs_Session") ProProfs_Session: String?,
         @Field("ProProfs_Message") ProProfs_Message: String,
     ):Response<VisitorMessageResponse>
-
 
     @FormUrlEncoded
     @POST("genrate_transcript")
@@ -93,6 +90,34 @@ interface ApiClient {
         @Field("ProProfs_site_id") ProProfs_site_id: String?,
         @Field("ProProfs_closed_by") ProProfs_closed_by: String?,
     ):Response<String>
+
+    @FormUrlEncoded
+    @POST("submitrating")
+    suspend fun submitRating(
+        @Field("Site_id") Site_id:String,
+        @Field("ProProfs_Session")ProProfs_Session:String,
+        @Field("ProProfs_rating")ProProfs_rating:Int
+    ):Response<Any>
+
+    @FormUrlEncoded
+    @POST("postchat")
+    suspend fun postChat(
+        @Field("proprofs_transcript")proprofs_transcript:String,
+        @Field("post_ProProfs_rating")post_ProProfs_rating:Int,
+        @Field("post_ProProfs_session")post_ProProfs_session:String,
+        @Field("post_ProProfs_language_id")post_ProProfs_language_id:String,
+        @Field("post_ProProfs_site_id")post_ProProfs_site_id:String,
+        @FieldMap others_string:HashMap<String, String>,
+        @FieldMap others_array:HashMap<String, ArrayList<String>>,
+        @Field("post_ProProfs_field_counter")post_ProProfs_field_counter:String,
+        @Field("AccountCode")AccountCode:String
+    ):Response<String>
+
+    @FormUrlEncoded
+    @POST("updatemessagestatus")
+    suspend fun updateMessageStatus(
+        @Field("ProProfs_Session")ProProfs_Session:String
+    )
 }
 
 

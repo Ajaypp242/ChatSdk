@@ -1,6 +1,5 @@
 package com.chat.sdk.activity.form
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +38,6 @@ class CheckboxAdapter(private val childAdaptorResponse: ChildAdaptorResponse) :
         val text = options!![position]
         holder.btn.text = text
         holder.btn.setOnClickListener {
-//
             if (holder.btn.isChecked) {
                 if (!response.contains(text)) {
                     response.add(options!![position])
@@ -49,13 +47,8 @@ class CheckboxAdapter(private val childAdaptorResponse: ChildAdaptorResponse) :
                     response.remove(options!![position])
                 }
             }
-            Log.d("response",response.toString())
             val value = response.joinToString(",")
-//            if (value != null) {
                 childAdaptorResponse.setResponse(value, parentPosition)
-//            }
         }
-
-
     }
 }

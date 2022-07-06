@@ -1,18 +1,14 @@
 package com.chat.sdk.activity.bubble
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
-import android.util.Log
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.drawable.DrawableCompat
@@ -23,10 +19,10 @@ import com.chat.sdk.network.BaseUrl
 import com.chat.sdk.util.Constant
 import com.mikhaellopez.circularimageview.CircularImageView
 
-class CircularBubble()  {
+internal class CircularBubble() {
 
     fun configureBubble(view: View, chatStyle: ChatStyle) {
-        val circularView =  createCircularLayout(view,chatStyle)
+        val circularView = createCircularLayout(view, chatStyle)
         with(circularView) {
             when (chatStyle.embedded_window) {
                 CircularBubbleType.FEMALE.type -> {
@@ -69,7 +65,8 @@ class CircularBubble()  {
 
     private fun createCircularLayout(view: View, chatStyle: ChatStyle): ConstraintLayout? {
         val layout = view.findViewById<ConstraintLayout>(R.id.bubble_layout)
-        val unwrappedDrawable = AppCompatResources.getDrawable(view.context, R.drawable.circular_bubble_bg)
+        val unwrappedDrawable =
+            AppCompatResources.getDrawable(view.context, R.drawable.circular_bubble_bg)
         val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
         if (wrappedDrawable != null) {
             DrawableCompat.setTint(wrappedDrawable, Color.parseColor("#${chatStyle.chead_color}"))
@@ -78,34 +75,64 @@ class CircularBubble()  {
         return layout
     }
 
-    private  fun onlineIcon(context: Context,): LinearLayout {
-        val  icon = LinearLayout(context)
+    private fun onlineIcon(context: Context): LinearLayout {
+        val icon = LinearLayout(context)
         icon.id = R.id.status
-        icon.layoutParams =  LinearLayout.LayoutParams(60, 60)
+        icon.layoutParams = LinearLayout.LayoutParams(60, 60)
         icon.setBackgroundResource(R.drawable.offline_icon)
         return icon
     }
 
-    private fun setOnlineIconConstraint(circularView: ConstraintLayout){
+    private fun setOnlineIconConstraint(circularView: ConstraintLayout) {
         val constraintSet = ConstraintSet()
         constraintSet.clone(circularView)
-        constraintSet.connect(R.id.status,ConstraintSet.TOP,ConstraintSet.PARENT_ID,ConstraintSet.TOP)
-        constraintSet.connect(R.id.status,ConstraintSet.RIGHT,ConstraintSet.PARENT_ID,ConstraintSet.RIGHT)
-        constraintSet.setMargin(R.id.status,ConstraintSet.RIGHT,15)
+        constraintSet.connect(
+            R.id.status,
+            ConstraintSet.TOP,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.TOP
+        )
+        constraintSet.connect(
+            R.id.status,
+            ConstraintSet.RIGHT,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.RIGHT
+        )
+        constraintSet.setMargin(R.id.status, ConstraintSet.RIGHT, 15)
         constraintSet.applyTo(circularView)
     }
 
-    private fun setBubbleIconConstraint(circularView: ConstraintLayout){
+    private fun setBubbleIconConstraint(circularView: ConstraintLayout) {
         val constraintSet = ConstraintSet()
         constraintSet.clone(circularView)
-        constraintSet.connect(R.id.bubble_icon,ConstraintSet.TOP,ConstraintSet.PARENT_ID,ConstraintSet.TOP)
-        constraintSet.connect(R.id.bubble_icon,ConstraintSet.RIGHT,ConstraintSet.PARENT_ID,ConstraintSet.RIGHT)
-        constraintSet.connect(R.id.bubble_icon,ConstraintSet.BOTTOM,ConstraintSet.PARENT_ID,ConstraintSet.BOTTOM)
-        constraintSet.connect(R.id.bubble_icon,ConstraintSet.LEFT,ConstraintSet.PARENT_ID,ConstraintSet.LEFT)
+        constraintSet.connect(
+            R.id.bubble_icon,
+            ConstraintSet.TOP,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.TOP
+        )
+        constraintSet.connect(
+            R.id.bubble_icon,
+            ConstraintSet.RIGHT,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.RIGHT
+        )
+        constraintSet.connect(
+            R.id.bubble_icon,
+            ConstraintSet.BOTTOM,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.BOTTOM
+        )
+        constraintSet.connect(
+            R.id.bubble_icon,
+            ConstraintSet.LEFT,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.LEFT
+        )
         constraintSet.applyTo(circularView)
     }
 
-    private fun createImageView(context: Context,): CircularImageView {
+    private fun createImageView(context: Context): CircularImageView {
         val imageView = CircularImageView(context)
         imageView.id = R.id.bubble_icon
         imageView.layoutParams = LinearLayout.LayoutParams(
@@ -116,7 +143,7 @@ class CircularBubble()  {
         return imageView
     }
 
-    private fun createTextView(context: Context,text: String): TextView {
+    private fun createTextView(context: Context, text: String): TextView {
         val textView = TextView(context)
         textView.id = R.id.bubble_icon
         textView.layoutParams = LinearLayout.LayoutParams(
@@ -134,10 +161,11 @@ class CircularBubble()  {
         return textView
     }
 
-    private fun createIcon(context: Context,type:String): ImageView {
+    private fun createIcon(context: Context, type: String): ImageView {
         val imageView = ImageView(context)
         imageView.id = R.id.bubble_icon
-        imageView.layoutParams = LinearLayout.LayoutParams(Constant.BUBBLE_WIDTH -150, Constant.BUBBLE_HEIGHT - 150)
+        imageView.layoutParams =
+            LinearLayout.LayoutParams(Constant.BUBBLE_WIDTH - 150, Constant.BUBBLE_HEIGHT - 150)
         when (type) {
             CircularBubbleType.ICON_7.type -> {
                 imageView.setImageResource(R.drawable.seven)
@@ -147,7 +175,8 @@ class CircularBubble()  {
             }
             CircularBubbleType.ICON_12.type -> {
                 imageView.setImageResource(R.drawable.twelve)
-            } else -> {
+            }
+            else -> {
                 imageView.setImageResource(R.drawable.third)
             }
         }

@@ -23,7 +23,6 @@ class RadioAdapter(private val childAdaptorResponse: ChildAdaptorResponse) : Rec
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RadioViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.radio_item, parent, false)
-
         return RadioViewHolder(view)
     }
 

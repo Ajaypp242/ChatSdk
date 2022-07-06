@@ -6,7 +6,7 @@ import com.chat.sdk.R
 
 enum class OperatorStatusType(val type:Int) {
     ONLINE(1),
-    OFFLINE(0),
+    OFFLINE(0)
 }
 
 class OperatorStatus()  {

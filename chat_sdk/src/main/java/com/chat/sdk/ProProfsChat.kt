@@ -1,45 +1,62 @@
 package com.chat.sdk
 
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.view.View
 import com.chat.sdk.activity.bubble.*
+import com.chat.sdk.activity.chat.ChatActivity
+import com.chat.sdk.activity.chat.ChatStatusType
 import com.chat.sdk.activity.form.FormActivity
-import com.chat.sdk.modal.ChatData
-import com.chat.sdk.modal.ChatSettingData
-import com.chat.sdk.modal.Operator
+import com.chat.sdk.modal.*
 import com.chat.sdk.network.ApiAdapter
 import com.chat.sdk.network.GetChatData
 import com.chat.sdk.session.Session
+import com.chat.sdk.util.CommonUtil
+import com.chat.sdk.util.Constant
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
-class ProProfsChat {
+ class ProProfsChat(private val context: Context, private val site_id: String) {
     private var bubble: View? = null
     private var chatSettingData: ChatSettingData? = null
-    lateinit var context: Context
     private var operatorStatus: OperatorStatusType = OperatorStatusType.OFFLINE
-    fun init(context: Context, site_id: String): View? {
-        ChatData.site_id = site_id
+    private lateinit var sharedPreferences: SharedPreferences
+    private var chatStatus: String? = null
+   companion object{
+       internal  var messages : ArrayList<Message>? = null
+   }
+    fun init(): View? {
+        sharedPreferences =
+            context.getSharedPreferences(Constant.PREFERENCE_NAME, Context.MODE_PRIVATE)
+        val sessionId = Session(sharedPreferences).getKey(Constant.SESSION_KEY)
         if (bubble != null) {
             return bubble
         }
-        this.context = context
-        Session().init(context)
         bubble = Bubble(context)
         CoroutineScope(Dispatchers.Main).launch {
-            getData(site_id)
+            getData(sessionId, sharedPreferences)
         }
         return bubble
     }
 
-    private suspend fun getData(site_id: String) {
+    private suspend fun getData(
+        session_id: String?,
+        sharedPreferences: SharedPreferences
+    ) {
         try {
             val response = ApiAdapter.apiClient.getData(
-                site_id, "", "", "",
+                site_id, "", session_id, "",
                 "", "", "", "", "",
                 "", "", ""
             )
             chatSettingData = response.body()
+//            ChatSettingData.chatSettingData = response.body()!!
+            chatStatus = chatSettingData!!.chat_status.status
+            Session(sharedPreferences).setKey(
+                Constant.SESSION_KEY,
+                chatSettingData!!.proprofs_session
+            )
             CircularBubble().configureBubble(bubble!!, chatSettingData!!.chat_style)
             configureSetting()
         } catch (e: Exception) {
@@ -48,17 +65,21 @@ class ProProfsChat {
 
     private fun configureSetting() {
         if (chatSettingData != null) {
-            updateOperatorStatus(chatSettingData!!.operator_status)
+            ChatData.site_id = site_id
             ChatData.ProProfs_Session = chatSettingData?.proprofs_session
             ChatData.proprofs_language_id = chatSettingData?.proprofs_language_id
-            bubble!!.setOnClickListener {
-                FormActivity().startActivity(ChatData.site_id!!, context, chatSettingData!!)
-            }
-            updateOperatorStatus(chatSettingData!!.operator_status)
+           GetChatData.chatDataSharedFlow = GetChatData().getSharedFlow()
+
             CoroutineScope(Dispatchers.IO).launch {
-                GetChatData().flow.collect { value ->
-                    updateOperatorStatus(value!!.operator_status)
+                GetChatData.chatDataSharedFlow.collect { value ->
+                    chatStatus = value.chat_status
+                    chatSettingData!!.operator_status = value.operator_status
+                    updateOperatorStatus(value.operator_status)
                 }
+            }
+
+            bubble!!.setOnClickListener {
+                navigationOnChatStatus()
             }
         }
     }
@@ -70,5 +91,46 @@ class ProProfsChat {
             operatorStatus = newStatus
             OperatorStatus.changeStatus(bubble!!, operatorStatus)
         }
+    }
+
+    private fun navigationOnChatStatus() {
+        ChatData.ProProfs_Msg_Counter = "0"
+        if (chatStatus != null) {
+            when (chatStatus) {
+                ChatStatusType.ACCEPTED.type -> {
+                    launchChatActivity()
+                }
+                ChatStatusType.REQUESTED.type -> {
+                    launchChatActivity()
+                }
+                else -> {
+                    launchFormActivity()
+                }
+            }
+        }
+    }
+
+    private fun launchChatActivity() {
+        val name = Session(sharedPreferences).getKey(Constant.VISITOR_NAME)
+        val email = Session(sharedPreferences).getKey(Constant.VISITOR_EMAIL)
+        ChatData.ProProfs_Visitor_name = name!!
+        ChatData.ProProfs_Visitor_email = email!!
+        val intent = Intent(context, ChatActivity::class.java)
+//        intent.addCategory(Intent.CATEGORY_HOME)
+//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("chatSettingData", chatSettingData)
+        intent.putExtra("site_id", site_id)
+        intent.putExtra("name", name)
+        intent.putExtra("email", email)
+        context.startActivity(intent)
+    }
+
+    private fun launchFormActivity() {
+        val formType: FormType = if (chatSettingData!!.operator_status.isEmpty()) FormType.OFFLINE else FormType.PRE_CHAT
+        val starter = Intent(context, FormActivity::class.java)
+        starter.putExtra("chatSettingData", chatSettingData)
+        starter.putExtra("site_id", site_id)
+        starter.putExtra("form_type", formType)
+        context.startActivity(starter)
     }
 }

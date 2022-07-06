@@ -5,6 +5,7 @@ import com.chat.sdk.ProProfsChat
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.chat.demo.databinding.ActivityMainBinding
+import com.chat.sdk.activity.bubble.BarBubble
 
 
 class MainActivity : AppCompatActivity() {
@@ -15,7 +16,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        val bubble = ProProfsChat().init(this, live_site_id)
+//        ProProfsChat.messages
+        val bubble = ProProfsChat(this,live_site_id).init()
         if (bubble != null) {
             binding.ll.addView(bubble)
         }

@@ -1,21 +1,33 @@
 package com.chat.sdk.util
 
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.chat.sdk.R
+import com.chat.sdk.activity.form.FormActivity
 import com.chat.sdk.activity.form.FormFieldType
 import com.chat.sdk.modal.*
+import java.lang.reflect.Array
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class FormUtil {
     fun getCatTypeFields(
         data: List<ChatFormField>,
-        chatWindowType: ChatWindowType
+        chatWindowType: FormType
     ): List<ChatFormField> {
         return data.filter { it.fleg == chatWindowType.type }
     }
 
-    fun getCatTextField(data: List<ChatFormText>, chatWindowType: ChatWindowType): ChatFormText {
+    fun getCatTextField(data: List<ChatFormText>, chatWindowType: FormType): ChatFormText {
         return data.filter { it.fleg == chatWindowType.type }[0]
     }
 
@@ -23,32 +35,37 @@ class FormUtil {
         return data.sortedBy { it.order.toInt() }
     }
 
-    fun validateForm(chatFormFields: List<ChatFormField>,  recyclerView: RecyclerView ): FormValidationReturnType {
+    fun validateForm(
+        chatFormFields: List<ChatFormField>,
+        recyclerView: RecyclerView
+    ): FormValidationReturnType {
         val submitData = ArrayList<FormValidationSubmitType>()
         var isValid = true
-        for ((index,field) in chatFormFields.withIndex()) {
+        for ((index, field) in chatFormFields.withIndex()) {
             if (field.js == "Y") {
                 if (field.isemail == "Y") {
-                    if(field.value.isNullOrEmpty()){
+                    if (field.value.isNullOrEmpty()) {
                         isValid = false
-                        recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility = TextView.VISIBLE
-                        break
-                    } else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(field.value.toString()).matches()){
-                        recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility = TextView.VISIBLE
+                        recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility =
+                            TextView.VISIBLE
+                    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(field.value.toString())
+                            .matches()
+                    ) {
+                        recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility =
+                            TextView.VISIBLE
                         isValid = false
-                        break
                     } else {
-                        recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility = TextView.INVISIBLE
-                        isValid = true
+                        recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility =
+                            TextView.INVISIBLE
                     }
-                }  else {
-                    if(field.value.isNullOrEmpty()){
+                } else {
+                    if (field.value.isNullOrEmpty()) {
                         isValid = false
-                        recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility = TextView.VISIBLE
-                        break
-                    }else {
-                        recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility = TextView.INVISIBLE
-                        isValid = true
+                        recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility =
+                            TextView.VISIBLE
+                    } else {
+                        recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility =
+                            TextView.INVISIBLE
                     }
                 }
             }
@@ -61,7 +78,7 @@ class FormUtil {
         val dynamicArrayParams: HashMap<String, ArrayList<String>> = HashMap()
         val name = ""
         val email = ""
-        val formSubmitValue =FormSubmitValue(name,email,dynamicStringParams,dynamicArrayParams)
+        val formSubmitValue = FormSubmitValue(name, email, dynamicStringParams, dynamicArrayParams)
         for ((index, field) in chatFormFields.withIndex()) {
             when (field.fld_type) {
                 FormFieldType.TEXT.type -> {
@@ -74,7 +91,8 @@ class FormUtil {
                     }
                 }
                 FormFieldType.TEXTAREA.type -> {
-                   formSubmitValue.dynamicStringParams["pp_fld_${index + 1}"] = field.value.toString()
+                    formSubmitValue.dynamicStringParams["pp_fld_${index + 1}"] =
+                        field.value.toString()
                 }
                 else -> {
                     val response = ArrayList<String>()
@@ -82,10 +100,42 @@ class FormUtil {
                     for (value in res!!) {
                         response.add(value)
                     }
-                   formSubmitValue.dynamicArrayParams["pp_fld_${index + 1}"] = response
+                    formSubmitValue.dynamicArrayParams["pp_fld_${index + 1}"] = response
                 }
             }
         }
+        Log.d("formParams",formSubmitValue.toString())
         return formSubmitValue
+    }
+
+    fun starRating(count: Int, context: Context, color: String, stars: kotlin.Array<ImageView>, resId:Int) {
+        val fillUnwrappedDrawable =
+            AppCompatResources.getDrawable(context, resId)
+        val fillWrappedDrawable = fillUnwrappedDrawable?.let { DrawableCompat.wrap(it) }
+        if (fillWrappedDrawable != null) {
+            DrawableCompat.setTint(
+                fillWrappedDrawable,
+                Color.parseColor("#${color}")
+            )
+        }
+
+        val normalUnwrappedDrawable =
+            AppCompatResources.getDrawable(context, resId)
+        val normalWrappedDrawable = normalUnwrappedDrawable?.let { DrawableCompat.wrap(it) }
+        if (normalWrappedDrawable != null) {
+            DrawableCompat.setTint(
+                normalWrappedDrawable,
+                Color.parseColor("#e3dddd")
+            )
+        }
+
+        for ((index, field) in stars.withIndex()) {
+            if (index < count) {
+                field.background = fillWrappedDrawable
+            } else {
+                field.background = normalWrappedDrawable
+            }
+        }
+
     }
 }

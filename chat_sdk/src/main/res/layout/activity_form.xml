@@ -22,6 +22,52 @@
         android:textColor="@color/form_title"
         android:textSize="@dimen/form_title_size"
         />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rating_layout"
+        android:visibility="gone"
+       android:gravity="center"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/star_big"
+            android:id="@+id/star1"
+            tools:ignore="ContentDescription" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/star_big"
+            android:id="@+id/star2"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/star_big"
+            android:id="@+id/star3"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/star_big"
+            android:id="@+id/star4"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/star_big"
+            android:id="@+id/star5"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -9,10 +9,13 @@
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/bar_bubble_bg.xml" value="0.1245" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/circular_bubble_bg.xml" value="0.1" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/edit_text_border.xml" value="0.1665" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/ic_iconmonstr_star_3.xml" value="0.1035" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/offline_icon.xml" value="0.1035" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/online_icon.xml" value="0.1015" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/opertator_chat_bubble.xml" value="0.1665" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/send_btn_background.xml" value="0.2725" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/star.xml" value="0.1035" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/star_big.xml" value="0.1035" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/visitor_chat_bubble.xml" value="0.1665" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout-v21/activity_form.xml" value="0.28802083333333334" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout-v28/custom_toolbar.xml" value="0.27395833333333336" />

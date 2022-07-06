@@ -1,6 +1,5 @@
 package com.chat.sdk.activity.form
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,38 +15,14 @@ class PrePostViewModal : ViewModel() {
         onError("Exception handled: ${throwable.localizedMessage}")
     }
     val operators = MutableLiveData<List<Operator>>()
-init {
-    CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-        GetChatData().flow.collect {
-                value ->
-            Log.d("DATA", "PrePostViewModal FLOW" +value)
-            operators.postValue(value?.operator_status)
+
+    init {
+        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            GetChatData.chatDataSharedFlow.collect { value ->
+                operators.postValue(value.operator_status)
+            }
         }
     }
-
-}
-//    fun getChats(
-//        siteId: String,
-//        proprofs_language_id: String,
-//        proprofs_session: String,
-//    ) {
-//        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-//
-//            val response = ApiAdapter.apiClient.getChat(
-//                siteId, proprofs_language_id, proprofs_session, "0",
-//                "330", "1", "chat_sdk", "0",
-//                "",
-//                "", ""
-//            )
-//            withContext(Dispatchers.Main) {
-//                if (response.isSuccessful) {
-//                    operators.postValue(response.body()?.operator_status)
-//                } else {
-//                    onError("Error : ${response.message()} ")
-//                }
-//            }
-//        }
-//    }
 
     private fun onError(message: String) {
         errorMessage.value = message
