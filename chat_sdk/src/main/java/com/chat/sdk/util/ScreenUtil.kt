@@ -1,18 +1,10 @@
 package com.chat.sdk.util
 
 import android.content.Context
-import android.util.DisplayMetrics
 
 class ScreenUtil {
     fun getScreenWidth(context: Context): Int {
-        val displayMetrics: DisplayMetrics = context.resources.displayMetrics
-        val dpWidth = displayMetrics.widthPixels
-        return  dpWidth
-    }
-
-    fun getScreenHeight(context: Context): Int {
-        val displayMetrics: DisplayMetrics = context.resources.displayMetrics
-        val dpHeight = displayMetrics.heightPixels
-        return  dpHeight
+        val scale: Float = context.resources.displayMetrics.density
+        return (60 * scale + 0.5f).toInt()
     }
 }

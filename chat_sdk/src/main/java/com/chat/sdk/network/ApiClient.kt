@@ -1,9 +1,12 @@
 package com.chat.sdk.network
 
 import com.chat.sdk.modal.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.http.*
+import java.io.File
 
 interface ApiClient {
     @FormUrlEncoded
@@ -40,9 +43,9 @@ interface ApiClient {
         @Field("DepartmentRouting") DepartmentRouting: String,
         @Field("ProProfs_Chat_l2s_cv") ProProfs_Chat_l2s_cv: String,
         @Field("ProProfs_Current_URL_manual") ProProfs_Current_URL_manual: String,
-        @FieldMap others_string:HashMap<String, String>,
-        @FieldMap others_array:HashMap<String, ArrayList<String>>
-    ):Response<PreChatResponse>
+        @FieldMap others_string: HashMap<String, String>,
+        @FieldMap others_array: HashMap<String, ArrayList<String>>
+    ): Response<PreChatResponse>
 
     @FormUrlEncoded
     @POST("chat")
@@ -58,66 +61,89 @@ interface ApiClient {
         @Field("ProProfs_Visitor_name") ProProfs_Visitor_name: String?,
         @Field("ProProfs_Visitor_email") ProProfs_Visitor_email: String?,
         @Field("ProProfs_typing_message") ProProfs_typing_message: String
-    ):Response<ChatData>
+    ): Response<ChatData>
 
     @FormUrlEncoded
     @POST("offlinemessage")
     suspend fun sendOfflineMessage(
-    @Field("pp_time_tracker_status") pp_time_tracker_status:String,
-    @Field("off_ProProfs_session") off_ProProfs_session:String?,
-    @Field("off_ProProfs_language_id") off_ProProfs_language_id:String?,
-    @Field("off_ProProfs_site_id") off_ProProfs_site_id:String,
-    @Field("pp_department_offline_label") pp_department_offline_label:String,
-    @Field("off_pp_visitor_name") off_pp_visitor_name:String,
-    @Field("off_pp_visitor_email") off_pp_visitor_email:String,
-    @Field("off_ProProfs_field_counter") off_ProProfs_field_counter:String,
-    @Field("ProProfs_device_id") ProProfs_device_id:String,
-    @Field("AccountCode") AccountCode:String,
-    @Field("DepartmentRouting1") DepartmentRouting1:String,
-    @Field("ProProfs_Current_URL_manual") ProProfs_Current_URL_manual:String, ):Response<JSONObject>
+        @Field("pp_time_tracker_status") pp_time_tracker_status: String,
+        @Field("off_ProProfs_session") off_ProProfs_session: String?,
+        @Field("off_ProProfs_language_id") off_ProProfs_language_id: String?,
+        @Field("off_ProProfs_site_id") off_ProProfs_site_id: String,
+        @Field("pp_department_offline_label") pp_department_offline_label: String,
+        @Field("off_pp_visitor_name") off_pp_visitor_name: String,
+        @Field("off_pp_visitor_email") off_pp_visitor_email: String,
+        @Field("off_ProProfs_field_counter") off_ProProfs_field_counter: String,
+        @Field("ProProfs_device_id") ProProfs_device_id: String,
+        @Field("AccountCode") AccountCode: String,
+        @Field("DepartmentRouting1") DepartmentRouting1: String,
+        @Field("ProProfs_Current_URL_manual") ProProfs_Current_URL_manual: String,
+    ): Response<JSONObject>
 
     @FormUrlEncoded
     @POST("send_visitor_message")
     suspend fun sendVisitorMessage(
         @Field("ProProfs_Session") ProProfs_Session: String?,
         @Field("ProProfs_Message") ProProfs_Message: String,
-    ):Response<VisitorMessageResponse>
+    ): Response<VisitorMessageResponse>
 
     @FormUrlEncoded
     @POST("genrate_transcript")
-    suspend fun  generateTranscript(
+    suspend fun generateTranscript(
         @Field("ProProfs_Session") ProProfs_Session: String?,
         @Field("ProProfs_site_id") ProProfs_site_id: String?,
         @Field("ProProfs_closed_by") ProProfs_closed_by: String?,
-    ):Response<String>
+    ): Response<String>
 
     @FormUrlEncoded
     @POST("submitrating")
     suspend fun submitRating(
-        @Field("Site_id") Site_id:String,
-        @Field("ProProfs_Session")ProProfs_Session:String,
-        @Field("ProProfs_rating")ProProfs_rating:Int
-    ):Response<Any>
+        @Field("Site_id") Site_id: String,
+        @Field("ProProfs_Session") ProProfs_Session: String,
+        @Field("ProProfs_rating") ProProfs_rating: Int
+    ): Response<Any>
 
     @FormUrlEncoded
     @POST("postchat")
     suspend fun postChat(
-        @Field("proprofs_transcript")proprofs_transcript:String,
-        @Field("post_ProProfs_rating")post_ProProfs_rating:Int,
-        @Field("post_ProProfs_session")post_ProProfs_session:String,
-        @Field("post_ProProfs_language_id")post_ProProfs_language_id:String,
-        @Field("post_ProProfs_site_id")post_ProProfs_site_id:String,
-        @FieldMap others_string:HashMap<String, String>,
-        @FieldMap others_array:HashMap<String, ArrayList<String>>,
-        @Field("post_ProProfs_field_counter")post_ProProfs_field_counter:String,
-        @Field("AccountCode")AccountCode:String
-    ):Response<String>
+        @Field("proprofs_transcript") proprofs_transcript: Int,
+        @Field("post_ProProfs_rating") post_ProProfs_rating: Int,
+        @Field("post_ProProfs_session") post_ProProfs_session: String,
+        @Field("post_ProProfs_language_id") post_ProProfs_language_id: String,
+        @Field("post_ProProfs_site_id") post_ProProfs_site_id: String,
+        @FieldMap others_string: HashMap<String, String>,
+        @FieldMap others_array: HashMap<String, ArrayList<String>>,
+        @Field("post_ProProfs_field_counter") post_ProProfs_field_counter: String,
+        @Field("AccountCode") AccountCode: String
+    ): Response<Any>
 
     @FormUrlEncoded
     @POST("updatemessagestatus")
     suspend fun updateMessageStatus(
-        @Field("ProProfs_Session")ProProfs_Session:String
+        @Field("ProProfs_Session") ProProfs_Session: String
     )
+
+//    @Multipart
+//    @POST("uploadimage")
+//    suspend fun uploadImage(
+//        @Part("pp_img_counter") pp_img_counter: RequestBody,
+////        @Part pp_file: MultipartBody.Part,
+//        @Part("pp_file") pp_file: MultipartBody.Part,
+//        @Part("session_id_image") session_id_image: RequestBody,
+//        @Part("site_id") site_id: RequestBody,
+//
+//        ): Response<Any>
+
+    @FormUrlEncoded
+    @POST("uploadimage")
+    suspend fun uploadImage(
+        @Field("pp_img_counter") pp_img_counter: String,
+//        @Part pp_file: MultipartBody.Part,
+        @Field("pp_file") pp_file: MultipartBody.Part,
+        @Field("session_id_image") session_id_image: RequestBody,
+        @Field("site_id") site_id: RequestBody,
+
+        ): Response<Any>
 }
 
 

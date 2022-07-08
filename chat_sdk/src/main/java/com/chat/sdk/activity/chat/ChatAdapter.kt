@@ -14,7 +14,8 @@ import com.chat.sdk.R
 import com.chat.sdk.modal.ChatStyle
 import com.chat.sdk.modal.Message
 
-class ChatAdapter(private val chatStyle: ChatStyle, private  val context: Context) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
+class ChatAdapter(private val chatStyle: ChatStyle, private val context: Context) :
+    RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
     private val operatorMessageView = 1
     private val visitorMessageView = 2
 
@@ -22,67 +23,87 @@ class ChatAdapter(private val chatStyle: ChatStyle, private  val context: Contex
 
     fun setChatList(messages: ArrayList<Message>) {
         this.messages = messages
-
     }
 
     fun addChatList(messages: ArrayList<Message>) {
         this.messages?.addAll(messages)
-
     }
 
     inner class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val message: TextView = itemView.findViewById(R.id.message)
-        val time: TextView = itemView.findViewById(R.id.time)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         val view: View?
-        return if (viewType == visitorMessageView) {
-            view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.visitor_chat_view, parent, false)
-            ChatViewHolder(view)
-        } else   {
-            view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.operator_chat_view, parent, false)
-            ChatViewHolder(view)
+        return when (viewType) {
+            visitorMessageView -> {
+                view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.visitor_chat_view, parent, false)
+                return ChatViewHolder(view)
+            }
+            operatorMessageView -> {
+                view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.operator_chat_view, parent, false)
+                ChatViewHolder(view)
+            }
+            else -> {
+                return ChatViewHolder(View(context))
+            }
         }
     }
 
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
-        if(holder.itemViewType  == visitorMessageView){
-            holder.message.setTextColor(Color.parseColor("#${ chatStyle.chat_visitor_name_color}"))
+        if (holder.itemViewType == visitorMessageView || holder.itemViewType == operatorMessageView) {
+            val message: TextView = holder.itemView.findViewById(R.id.message)
+            val time: TextView = holder.itemView.findViewById(R.id.time)
+            if (holder.itemViewType == visitorMessageView) {
+                message.setTextColor(Color.parseColor("#${chatStyle.chat_visitor_name_color}"))
 
-            val unwrappedDrawable = AppCompatResources.getDrawable(context, R.drawable.visitor_chat_bubble)
-            val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
-            if (wrappedDrawable != null) {
-                DrawableCompat.setTint(wrappedDrawable, Color.parseColor("#${chatStyle.chead_color}"))
+                val unwrappedDrawable =
+                    AppCompatResources.getDrawable(context, R.drawable.visitor_chat_bubble)
+                val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
+                if (wrappedDrawable != null) {
+                    DrawableCompat.setTint(
+                        wrappedDrawable,
+                        Color.parseColor("#${chatStyle.chead_color}")
+                    )
+                }
+                message.background = wrappedDrawable
+            } else {
+                message.setTextColor(Color.parseColor("#${chatStyle.chat_operator_name_color}"))
             }
-            holder.message.background = wrappedDrawable
-        } else {
-            holder.message.setTextColor(Color.parseColor("#${chatStyle.chat_operator_name_color}"))
+            val item = messages?.get(position)
+            message.text = item?.message
+            if (chatStyle.addchtm_time == "Y") {
+                time.visibility = View.VISIBLE
+            } else {
+                time.visibility = View.GONE
+            }
+            time.text = item?.msgtm
         }
-        val item = messages?.get(position)
-        holder.message.text = item?.message
-        if(chatStyle.addchtm_time == "Y"){
-            holder.time.visibility = View.VISIBLE
-        } else {
-            holder.time.visibility = View.GONE
-        }
-        holder.time.text = item?.msgtm
+
     }
 
     override fun getItemCount(): Int {
-       if(messages != null){
-           return  messages!!.size
-       }
-        return  0
+        if (messages != null) {
+            return messages!!.size
+        }
+        return 0
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (messages?.get(position)?.v_o == "v") {
-            visitorMessageView
-        } else {
-            operatorMessageView
+        return when (messages?.get(position)?.v_o) {
+            "v" -> {
+                visitorMessageView
+            }
+            "o" -> {
+                operatorMessageView
+            }
+            else -> {
+                val view = View(context)
+                view.id = R.id.empty_view
+                view.id
+            }
         }
+
     }
 }

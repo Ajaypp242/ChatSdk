@@ -1,9 +1,13 @@
 package com.chat.sdk
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.view.View
+import androidx.core.content.ContextCompat.startActivity
 import com.chat.sdk.activity.bubble.*
 import com.chat.sdk.activity.chat.ChatActivity
 import com.chat.sdk.activity.chat.ChatStatusType
@@ -11,20 +15,23 @@ import com.chat.sdk.activity.form.FormActivity
 import com.chat.sdk.modal.*
 import com.chat.sdk.network.ApiAdapter
 import com.chat.sdk.network.GetChatData
-import com.chat.sdk.session.Session
-import com.chat.sdk.util.CommonUtil
 import com.chat.sdk.util.Constant
+import com.chat.sdk.util.Session
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
- class ProProfsChat(private val context: Context, private val site_id: String) {
+
+class ProProfsChat(private val context: Context, private val site_id: String) {
     private var bubble: View? = null
     private var chatSettingData: ChatSettingData? = null
+
     private var operatorStatus: OperatorStatusType = OperatorStatusType.OFFLINE
     private lateinit var sharedPreferences: SharedPreferences
     private var chatStatus: String? = null
    companion object{
        internal  var messages : ArrayList<Message>? = null
+        var operatorName = ""
+         var operatorPhoto = ""
    }
     fun init(): View? {
         sharedPreferences =
@@ -51,19 +58,18 @@ import kotlinx.coroutines.flow.collect
                 "", "", ""
             )
             chatSettingData = response.body()
-//            ChatSettingData.chatSettingData = response.body()!!
             chatStatus = chatSettingData!!.chat_status.status
             Session(sharedPreferences).setKey(
                 Constant.SESSION_KEY,
                 chatSettingData!!.proprofs_session
             )
             CircularBubble().configureBubble(bubble!!, chatSettingData!!.chat_style)
-            configureSetting()
+            getChatData()
         } catch (e: Exception) {
         }
     }
 
-    private fun configureSetting() {
+    private fun getChatData() {
         if (chatSettingData != null) {
             ChatData.site_id = site_id
             ChatData.ProProfs_Session = chatSettingData?.proprofs_session
@@ -85,8 +91,7 @@ import kotlinx.coroutines.flow.collect
     }
 
     private fun updateOperatorStatus(operators: List<Operator>) {
-        val newStatus =
-            if (operators.isEmpty()) OperatorStatusType.OFFLINE else OperatorStatusType.ONLINE
+        val newStatus = if (operators.isEmpty()) OperatorStatusType.OFFLINE else OperatorStatusType.ONLINE
         if (operatorStatus != newStatus) {
             operatorStatus = newStatus
             OperatorStatus.changeStatus(bubble!!, operatorStatus)
@@ -116,8 +121,6 @@ import kotlinx.coroutines.flow.collect
         ChatData.ProProfs_Visitor_name = name!!
         ChatData.ProProfs_Visitor_email = email!!
         val intent = Intent(context, ChatActivity::class.java)
-//        intent.addCategory(Intent.CATEGORY_HOME)
-//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("chatSettingData", chatSettingData)
         intent.putExtra("site_id", site_id)
         intent.putExtra("name", name)

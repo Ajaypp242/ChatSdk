@@ -5,4 +5,5 @@
     <item name="bubble" type="id"/>
     <item name="bubble_icon" type="id"/>
     <item name="bubble_layout" type="id"/>
+    <item name="empty_view" type="id"/>
 </resources>

@@ -1,15 +1,21 @@
 package com.chat.sdk.activity.form
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.chat.sdk.ProProfsChat
 import com.chat.sdk.R
 import com.chat.sdk.activity.bubble.OperatorStatusType
 import com.chat.sdk.activity.chat.ChatActivity
@@ -17,7 +23,9 @@ import com.chat.sdk.databinding.ActivityFormBinding
 import com.chat.sdk.modal.*
 import com.chat.sdk.network.ApiAdapter
 import com.chat.sdk.util.CommonUtil
+import com.chat.sdk.util.Constant
 import com.chat.sdk.util.FormUtil
+import com.chat.sdk.util.Session
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,44 +39,37 @@ class FormActivity : AppCompatActivity() {
     private val adapter = FormAdapter()
     private var operatorStatus = OperatorStatusType.OFFLINE
     private var rating = 0
-
-    //    private val getResult =
-//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-//            if (it.resultCode == RESULT_OK) {
-//                currentFormType = FormType.POST_CHAT
-//                setFormScreen(chatSettingData!!, FormType.POST_CHAT)
-//            }
-//        }
     private lateinit var activityFormBinding: ActivityFormBinding
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        overridePendingTransition(R.anim.slide_in,R.anim.slide_out)
         super.onCreate(savedInstanceState)
         activityFormBinding = ActivityFormBinding.inflate(layoutInflater)
         setContentView(activityFormBinding.root)
-        val stars = arrayOf(
-            activityFormBinding.star1,
-            activityFormBinding.star2,
-            activityFormBinding.star3,
-            activityFormBinding.star4,
-            activityFormBinding.star5
-        )
-        chatSettingData = intent.getSerializableExtra("chatSettingData") as ChatSettingData
-        siteId = intent.getStringExtra("site_id").toString()
-        rating = intent.getIntExtra("rating", 0)
-        FormUtil().starRating(
-            rating,
-            applicationContext,
-            chatSettingData!!.chat_style.chead_color,
-            stars,
-            R.drawable.star_big
-        )
-        currentFormType = intent.getSerializableExtra("form_type") as FormType
+        getIntentData()
+        ratingUISetup()
         addToolbar()
+        setLayoutManager()
+        initViewModal()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit)
+    }
+
+    private fun initViewModal() {
+        val factory = PrePostViewModelFactory()
+        viewModel = ViewModelProvider(this, factory).get(PrePostViewModal::class.java)
+        operatorStatus = getOperatorStatus(chatSettingData!!.operator_status)
+        setFormScreen(chatSettingData!!, currentFormType!!)
+        viewModel.operators.observe(this) { changeFormType(it) }
+    }
+
+    private fun setLayoutManager() {
         val layoutManager = LinearLayoutManager(applicationContext)
         activityFormBinding.formRecyclerView.layoutManager = layoutManager
         activityFormBinding.formRecyclerView.adapter = adapter
-
         if (currentFormType == FormType.POST_CHAT && chatSettingData!!.chat_style.rate_chat == "Y") {
             activityFormBinding.ratingLayout.visibility = View.VISIBLE
         } else {
@@ -86,21 +87,37 @@ class FormActivity : AppCompatActivity() {
                 if (currentFormType == FormType.PRE_CHAT) {
                     preSubmitAction()
                 } else if (currentFormType == FormType.POST_CHAT) {
-                    val transcriptId = intent.getStringExtra("transcriptId")
-                    if (transcriptId != null)
-                        postSubmitAction(transcriptId)
+                    val transcriptId = intent.getIntExtra("transcriptId",0)
+                    postSubmitAction(transcriptId)
                 } else if (currentFormType == FormType.OFFLINE) {
                     offlineSubmitAction()
                 }
             }
         }
+    }
 
-        val factory = PrePostViewModelFactory()
-        viewModel = ViewModelProvider(this, factory).get(PrePostViewModal::class.java)
-        operatorStatus = getOperatorStatus(chatSettingData!!.operator_status)
-        setFormScreen(chatSettingData!!, currentFormType!!)
-        viewModel.operators.observe(this) { changeFormType(it) }
+    private fun getIntentData() {
+        chatSettingData = intent.getSerializableExtra("chatSettingData") as ChatSettingData
+        siteId = intent.getStringExtra("site_id").toString()
+        rating = intent.getIntExtra("rating", 0)
+        currentFormType = intent.getSerializableExtra("form_type") as FormType
+    }
 
+    private fun ratingUISetup() {
+        val stars = arrayOf(
+            activityFormBinding.star1,
+            activityFormBinding.star2,
+            activityFormBinding.star3,
+            activityFormBinding.star4,
+            activityFormBinding.star5
+        )
+        FormUtil().starRating(
+            rating,
+            applicationContext,
+            chatSettingData!!.chat_style.chead_color,
+            stars,
+            R.drawable.star_big
+        )
         activityFormBinding.star1.setOnClickListener {
             FormUtil().starRating(
                 1,
@@ -151,6 +168,7 @@ class FormActivity : AppCompatActivity() {
             )
             rating = 5
         }
+
     }
 
     private fun changeFormType(operators: List<Operator>) {
@@ -186,14 +204,24 @@ class FormActivity : AppCompatActivity() {
         adapter.setFormFields(sortedData, this)
     }
 
-
     private fun addToolbar() {
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.setCustomView(R.layout.custom_toolbar)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#${chatSettingData!!.chat_style.chead_color}")))
+        findViewById<ImageView>(R.id.minimize_icon).setOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit)
+        }
     }
 
-    private fun postSubmitAction(transcript_id: String) {
+    private fun postSubmitAction(transcript_id: Int) {
+        val alertDialog = CommonUtil().customLoadingDialogAlert(
+            this,
+            layoutInflater,
+            "Please wait...",
+            chatSettingData!!.chat_style.chead_color
+        )
+        alertDialog.show()
         CoroutineScope(Dispatchers.IO).launch {
             val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!)
             try {
@@ -208,15 +236,24 @@ class FormActivity : AppCompatActivity() {
                     adapter.chatFormField!!.size.toString(),
                     "SlRrSVBHMDUvMDBQdm1uRzYvTUplQT09"
                 )
-                Log.d("formParams", formSubmitValue.dynamicStringParams.toString())
-                Log.d("formParams", formSubmitValue.dynamicStringParams.toString())
+                Log.d("Form submit ","Form submit")
+
             } catch (e: Exception) {
+            }
+            finally {
+                alertDialog.dismiss()
+                finish()
             }
         }
     }
 
     private fun preSubmitAction() {
-        val alertDialog = CommonUtil().showProcessSpinner(this, "Please wait...")
+        val alertDialog = CommonUtil().customLoadingDialogAlert(
+            this,
+            layoutInflater,
+            "Please wait...",
+            chatSettingData!!.chat_style.chead_color
+        )
         alertDialog.show()
         CoroutineScope(Dispatchers.IO).launch {
             val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!)
@@ -235,7 +272,7 @@ class FormActivity : AppCompatActivity() {
                     "1657017412",
                     "SlRrSVBHMDUvMDBQdm1uRzYvTUplQT09",
                     "0",
-                    "https://www.proprofschat.com/chat-page/?id=MXd4bDEwYzFRbW5oNVpBaDI4WUQ1QT09",
+                    "https://www.proprofschat.com/chat-page/?id=${chatSettingData!!.proprofs_session}",
                     "",
                     formSubmitValue.dynamicStringParams,
                     formSubmitValue.dynamicArrayParams
@@ -251,7 +288,16 @@ class FormActivity : AppCompatActivity() {
     }
 
     private fun offlineSubmitAction() {
-        CoroutineScope(Dispatchers.IO).launch {
+        val alertDialog = CommonUtil().customLoadingDialogAlert(
+            this,
+            layoutInflater,
+            "Please wait...",
+            chatSettingData!!.chat_style.chead_color
+        )
+        alertDialog.show()
+        val messageView: TextView = alertDialog.findViewById<TextView>(android.R.id.message)!!
+        messageView.gravity = Gravity.CENTER
+        CoroutineScope(Dispatchers.Main).launch {
             val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!)
             try {
                 val response = ApiAdapter.apiClient.sendOfflineMessage(
@@ -268,7 +314,8 @@ class FormActivity : AppCompatActivity() {
                     "0",
                     "chat_sdk"
                 )
-                val res = response.body()
+                alertDialog.dismiss()
+                alertAfterOfflineSubmit()
             } catch (e: Exception) {
             }
         }
@@ -277,12 +324,24 @@ class FormActivity : AppCompatActivity() {
     private fun launchChatActivity(name: String, email: String) {
         ChatData.ProProfs_Visitor_name = name
         ChatData.ProProfs_Visitor_email = email
+        val sharedPreferences = applicationContext.getSharedPreferences(Constant.PREFERENCE_NAME, Context.MODE_PRIVATE)
+        Session(sharedPreferences).setKey(Constant.VISITOR_NAME, name)
+        Session(sharedPreferences).setKey(Constant.VISITOR_EMAIL, email)
         val intent = Intent(applicationContext, ChatActivity::class.java)
         intent.putExtra("chatSettingData", chatSettingData)
         intent.putExtra("site_id", siteId)
-        intent.putExtra("name", name)
-        intent.putExtra("email", email)
+//        intent.putExtra("name", name)
+//        intent.putExtra("email", email)
         startActivity(intent)
         finish()
+    }
+
+    private fun alertAfterOfflineSubmit() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Thank you for your message. We will respond shortly.")
+        builder.setNegativeButton("Ok ") { dialog, which ->
+            finish()
+        }
+        builder.show()
     }
 }

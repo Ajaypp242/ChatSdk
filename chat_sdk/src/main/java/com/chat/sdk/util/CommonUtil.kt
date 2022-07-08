@@ -2,18 +2,34 @@ package com.chat.sdk.util
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import com.chat.sdk.R
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 class CommonUtil {
+
+    fun customLoadingDialogAlert(context: Context, layoutInflater: LayoutInflater, heading:String, color:String): AlertDialog {
+        val builder = AlertDialog.Builder(context)
+        val view = layoutInflater.inflate(R.layout.custom_loader,null)
+        view.findViewById<TextView>(R.id.text).text =  heading
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.findViewById<ProgressBar>(R.id.progress_circular).indeterminateTintList = ColorStateList.valueOf(Color.parseColor("#${color}"))
+        }
+        builder.setView(view)
+        builder.setCancelable(false)
+        return builder.create()
+    }
 
     fun showProcessSpinner(context: Context, text: String): AlertDialog {
         val llPadding = 60

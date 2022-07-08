@@ -3,13 +3,19 @@ package com.chat.sdk.activity.chat
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
+import android.util.Base64
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -22,22 +28,32 @@ import com.chat.sdk.ProProfsChat
 import com.chat.sdk.R
 import com.chat.sdk.activity.form.FormActivity
 import com.chat.sdk.databinding.ActivityChatBinding
-import com.chat.sdk.modal.*
+import com.chat.sdk.modal.ChatData
+import com.chat.sdk.modal.ChatSettingData
+import com.chat.sdk.modal.FormType
+import com.chat.sdk.modal.Message
 import com.chat.sdk.network.ApiAdapter
 import com.chat.sdk.network.BaseUrl
 import com.chat.sdk.network.GetChatData
-import com.chat.sdk.session.Session
+import com.chat.sdk.util.Session
 import com.chat.sdk.util.CommonUtil
 import com.chat.sdk.util.Constant
 import com.chat.sdk.util.FormUtil
 import com.google.gson.Gson
-import kotlinx.coroutines.*
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.*
+
 
 class ChatActivity : AppCompatActivity() {
     private var chatSettingData: ChatSettingData? = null
-    private var visitorName: String? = null
-    private var visitorEmail: String? = null
+
+    //    private var visitorName: String? = null
+//    private var visitorEmail: String? = null
     private var siteId: String = ""
     private lateinit var activityChatBinding: ActivityChatBinding
     private lateinit var viewModel: ChatViewModal
@@ -46,39 +62,107 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var dialog: AlertDialog
     private var lastMessageId = "0"
     override fun onCreate(savedInstanceState: Bundle?) {
+        overridePendingTransition(R.anim.slide_in,R.anim.slide_out)
         super.onCreate(savedInstanceState)
         activityChatBinding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(activityChatBinding.root)
-        dialog = CommonUtil().showProcessSpinner(this, "Connecting...")
-        chatSettingData = intent.getSerializableExtra("chatSettingData") as ChatSettingData
-        visitorName = intent.getStringExtra("name")
-        visitorEmail = intent.getStringExtra("email")
-        val sharedPreferences =
-            applicationContext.getSharedPreferences(Constant.PREFERENCE_NAME, Context.MODE_PRIVATE)
-        Session(sharedPreferences).setKey(Constant.VISITOR_NAME, visitorName)
-        Session(sharedPreferences).setKey(Constant.VISITOR_EMAIL, visitorEmail)
-        siteId = intent.getStringExtra("site_id").toString()
+        getIntentData()
         addToolbar()
+        setHeader()
+        setLayoutManager()
+        initViewModal()
+        setFooter()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        ProProfsChat.messages = adapter.messages
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
+    private fun initViewModal() {
+        val factory = ChatViewModelFactory()
+        viewModel = ViewModelProvider(this, factory).get(ChatViewModal::class.java)
+        viewModel.chatData.observe(this) {
+            chatSettingData!!.operator_status = it.operator_status
+            if (it.chat_status == ChatStatusType.CLOSED.type) {
+                goToPreviousActivity(0)
+            } else {
+                if (it.messages.isNotEmpty()) {
+                    if (dialog.isShowing) {
+                        dialog.dismiss()
+                    }
+                    if (ChatData.ProProfs_Msg_Counter == "0") {
+                        adapter.setChatList(it.messages)
+                    } else {
+                        adapter.addChatList(it.messages)
+                    }
+                    ChatData.ProProfs_Msg_Counter = it.messages[it.messages.size - 1].sno
+                    activityChatBinding.chatRecyclerView.scrollToPosition(adapter.itemCount - 1)
+                    if (lastMessageId != it.messages[it.messages.size - 1].sno) {
+                        updateMessageStatus()
+                        lastMessageId = it.messages[it.messages.size - 1].sno
+                    }
+                }
+                if (it.operator_details is List<*>) {
+                    val operatorDetails = it.operator_details[0]
+                    val operatorDetailsObject = Gson().toJsonTree(operatorDetails).asJsonObject
+                    updateOperatorInfo(
+                        operatorDetailsObject.get("name").asString,
+                        operatorDetailsObject.get("photourl").asString
+                    )
+                }
+
+            }
+        }
+        viewModel.visitorMessage.observe(this) {
+            if (adapter.itemCount == 0) {
+                adapter.setChatList(it)
+            } else {
+                adapter.addChatList(it)
+            }
+            activityChatBinding.chatRecyclerView.scrollToPosition(adapter.itemCount - 1)
+        }
+    }
+
+    private fun getIntentData() {
+        chatSettingData = intent.getSerializableExtra("chatSettingData") as ChatSettingData
+//        visitorName = intent.getStringExtra("name")
+//        visitorEmail = intent.getStringExtra("email")
+        siteId = intent.getStringExtra("site_id").toString()
+    }
+
+    private fun setHeader() {
         if (chatSettingData!!.chat_style.rate_chat == "Y") {
             activityChatBinding.ratingLayout.visibility = VISIBLE
+            ratingUISetup()
         } else {
             activityChatBinding.ratingLayout.visibility = GONE
         }
+    }
+
+    private fun setLayoutManager() {
         val layoutManager = LinearLayoutManager(applicationContext)
         activityChatBinding.chatRecyclerView.layoutManager = layoutManager
         adapter = ChatAdapter(chatSettingData!!.chat_style, applicationContext)
         activityChatBinding.chatRecyclerView.adapter = adapter
-        Log.d("Messsages", ProProfsChat.messages.toString())
         if (ProProfsChat.messages != null) {
             adapter.setChatList(ProProfsChat.messages!!)
             activityChatBinding.chatRecyclerView.scrollToPosition(adapter.itemCount - 1)
+            updateOperatorInfo(ProProfsChat.operatorName,ProProfsChat.operatorPhoto)
         }
+        dialog = CommonUtil().customLoadingDialogAlert(
+            this,
+            layoutInflater,
+            "Connecting...",
+            chatSettingData!!.chat_style.chead_color
+        )
         if (adapter.itemCount == 0) {
-
             dialog.show()
         }
+    }
 
-//        adapter.setChatList(chatSettingData.)
+    private fun setFooter() {
         val button = activityChatBinding.sendBtn
         val unwrappedDrawable =
             AppCompatResources.getDrawable(applicationContext, R.drawable.send_btn_background)
@@ -94,126 +178,164 @@ class ChatActivity : AppCompatActivity() {
             sendMessage(activityChatBinding.messageBox.text.toString())
             activityChatBinding.messageBox.setText("")
         }
-        val closeBtn = findViewById<ImageView>(R.id.close_icon)
-        closeBtn.setOnClickListener {
-            closeChatAlert()
-        }
+        bindAttachmentFunction()
+    }
 
-        val factory = ChatViewModelFactory()
-        viewModel = ViewModelProvider(this, factory).get(ChatViewModal::class.java)
-        viewModel.chatData.observe(this) {
-            chatSettingData!!.operator_status = it.operator_status
 
-            if (it.messages.isNotEmpty()) {
-                if (dialog.isShowing) {
-                    dialog.dismiss()
-                }
-                if (ChatData.ProProfs_Msg_Counter == "0") {
-                    adapter.setChatList(it.messages)
-                } else {
-                    adapter.addChatList(it.messages)
-                }
-                ChatData.ProProfs_Msg_Counter = it.messages[it.messages.size - 1].sno
-                activityChatBinding.chatRecyclerView.scrollToPosition(adapter.itemCount - 1)
-                if (lastMessageId != it.messages[it.messages.size - 1].sno) {
-                    updateMessageStatus()
-                    lastMessageId = it.messages[it.messages.size - 1].sno
-                }
-            }
-
-            if (it.operator_details is List<*>) {
-                val operatorDetails = it.operator_details[0]
-                val operatorDetailsObject = Gson().toJsonTree(operatorDetails).asJsonObject
-                updateOperatorInfo(
-                    operatorDetailsObject.get("name").asString,
-                    operatorDetailsObject.get("photourl").asString
-                )
-            }
-            val stars = arrayOf(
-                activityChatBinding.star1,
-                activityChatBinding.star2,
-                activityChatBinding.star3,
-                activityChatBinding.star4,
-                activityChatBinding.star5
+    private fun ratingUISetup() {
+        val stars = arrayOf(
+            activityChatBinding.star1,
+            activityChatBinding.star2,
+            activityChatBinding.star3,
+            activityChatBinding.star4,
+            activityChatBinding.star5
+        )
+        activityChatBinding.star1.setOnClickListener {
+            FormUtil().starRating(
+                1,
+                applicationContext,
+                chatSettingData!!.chat_style.chead_color,
+                stars,
+                R.drawable.star
             )
-            activityChatBinding.star1.setOnClickListener {
-                FormUtil().starRating(
-                    1,
-                    applicationContext,
-                    chatSettingData!!.chat_style.chead_color,
-                    stars,
-                    R.drawable.star
-                )
-                rating = 1
-                rateToOperator()
-            }
-            activityChatBinding.star2.setOnClickListener {
-                FormUtil().starRating(
-                    2,
-                    applicationContext,
-                    chatSettingData!!.chat_style.chead_color,
-                    stars,
-                    R.drawable.star
-                )
-                rating = 2
-                rateToOperator()
-            }
-            activityChatBinding.star3.setOnClickListener {
-                FormUtil().starRating(
-                    3,
-                    applicationContext,
-                    chatSettingData!!.chat_style.chead_color,
-                    stars,
-                    R.drawable.star
-                )
-                rating = 3
-                rateToOperator()
-            }
-            activityChatBinding.star4.setOnClickListener {
-                FormUtil().starRating(
-                    4,
-                    applicationContext,
-                    chatSettingData!!.chat_style.chead_color,
-                    stars,
-                    R.drawable.star
-                )
-                rating = 4
-                rateToOperator()
-            }
-            activityChatBinding.star5.setOnClickListener {
-                FormUtil().starRating(
-                    5,
-                    applicationContext,
-                    chatSettingData!!.chat_style.chead_color,
-                    stars,
-                    R.drawable.star
-                )
-                rating = 5
-                rateToOperator()
-            }
+            rating = 1
+            rateToOperator()
         }
-
-        viewModel.visitorMessage.observe(this) {
-            if (adapter.itemCount == 0) {
-                adapter.setChatList(it)
-            } else {
-                adapter.addChatList(it)
-            }
-            activityChatBinding.chatRecyclerView.scrollToPosition(adapter.itemCount - 1)
+        activityChatBinding.star2.setOnClickListener {
+            FormUtil().starRating(
+                2,
+                applicationContext,
+                chatSettingData!!.chat_style.chead_color,
+                stars,
+                R.drawable.star
+            )
+            rating = 2
+            rateToOperator()
+        }
+        activityChatBinding.star3.setOnClickListener {
+            FormUtil().starRating(
+                3,
+                applicationContext,
+                chatSettingData!!.chat_style.chead_color,
+                stars,
+                R.drawable.star
+            )
+            rating = 3
+            rateToOperator()
+        }
+        activityChatBinding.star4.setOnClickListener {
+            FormUtil().starRating(
+                4,
+                applicationContext,
+                chatSettingData!!.chat_style.chead_color,
+                stars,
+                R.drawable.star
+            )
+            rating = 4
+            rateToOperator()
+        }
+        activityChatBinding.star5.setOnClickListener {
+            FormUtil().starRating(
+                5,
+                applicationContext,
+                chatSettingData!!.chat_style.chead_color,
+                stars,
+                R.drawable.star
+            )
+            rating = 5
+            rateToOperator()
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        ProProfsChat.messages = adapter.messages
-//        moveTaskToBack(true);
-//        return true;
+    private fun bindAttachmentFunction() {
+        val imageResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK) {
+                    if (it.data != null) {
+                        val selectedImage: Uri? = it.data?.data
+                        val bitmap = getBitmapFromUri(selectedImage!!)
+                        val file = convertImageUriToFile(bitmap)
+                        uploadImage(file)
+                    }
+                }
+            }
+
+        activityChatBinding.attachment.setOnClickListener {
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            imageResult.launch(intent)
+        }
     }
+
+    fun getBase64FromPath(path: String?): String? {
+        var base64 = ""
+        try { /*from   w w w .  ja  va  2s  .  c om*/
+            val file = File(path)
+            val buffer = ByteArray(file.length().toInt() + 100)
+            val length = FileInputStream(file).read(buffer)
+            base64 = Base64.encodeToString(
+                buffer, 0, length,
+                Base64.DEFAULT
+            )
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return base64
+    }
+
+
+    fun convertImageUriToFile(bitmap: Bitmap): File {
+        val file = File(applicationContext.cacheDir, "new");
+        file.createNewFile()
+        val bos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos);
+        val bitmapdata = bos.toByteArray()
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(file)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace();
+        }
+        try {
+            fos?.write(bitmapdata);
+            fos?.flush();
+            fos?.close();
+        } catch (e: IOException) {
+            e.printStackTrace();
+        }
+        return file
+    }
+
+
+    @Throws(IOException::class)
+    private fun getBitmapFromUri(uri: Uri): Bitmap {
+        val parcelFileDescriptor: ParcelFileDescriptor =
+            contentResolver.openFileDescriptor(uri, "r")!!
+        val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
+        val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+        parcelFileDescriptor.close()
+        return image
+    }
+
+
 
     private fun addToolbar() {
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.setCustomView(R.layout.custom_toolbar)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#${chatSettingData!!.chat_style.chead_color}")))
+        val closeBtn = findViewById<ImageView>(R.id.close_icon)
+        closeBtn.visibility = VISIBLE
+        closeBtn.setOnClickListener {
+            closeChatAlert()
+        }
+
+        val minimize = findViewById<ImageView>(R.id.minimize_icon)
+        minimize.setOnClickListener {
+            ProProfsChat.messages = adapter.messages
+            finish()
+            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+        }
     }
 
     private fun sendMessage(message: String) {
@@ -254,30 +376,36 @@ class ChatActivity : AppCompatActivity() {
                 val transcriptId = response.body()
                 if (transcriptId != null) {
                     GetChatData().resetChatData()
-                    val intent = Intent(applicationContext, FormActivity::class.java)
-                    val postFormIsEmpty = FormUtil().getCatTypeFields(
-                        chatSettingData!!.chat_form_field,
-                        FormType.POST_CHAT
-                    ).isEmpty()
-                    var formType: FormType = FormType.POST_CHAT
-                    if (postFormIsEmpty && chatSettingData!!.chat_style.rate_chat == "") {
-                        formType = FormType.PRE_CHAT
-                    }
-                    intent.putExtra("chatSettingData", chatSettingData)
-                    intent.putExtra("site_id", siteId)
-                    intent.putExtra("transcriptId", transcriptId)
-                    intent.putExtra("rating", rating)
-                    intent.putExtra("form_type", formType)
-                    startActivity(intent)
-                    finish()
+                    goToPreviousActivity(transcriptId.toInt())
                 }
             } catch (e: Exception) {
             }
         }
     }
 
+    private fun goToPreviousActivity(transcriptId: Int) {
+        val intent = Intent(applicationContext, FormActivity::class.java)
+        val postFormIsEmpty = FormUtil().getCatTypeFields(
+            chatSettingData!!.chat_form_field,
+            FormType.POST_CHAT
+        ).isEmpty()
+        var formType: FormType = FormType.POST_CHAT
+        if (postFormIsEmpty && chatSettingData!!.chat_style.rate_chat == "") {
+            formType = FormType.PRE_CHAT
+        }
+        intent.putExtra("chatSettingData", chatSettingData)
+        intent.putExtra("site_id", siteId)
+        intent.putExtra("transcriptId", transcriptId)
+        intent.putExtra("rating", rating)
+        intent.putExtra("form_type", formType)
+        startActivity(intent)
+        finish()
+    }
+
     private fun updateOperatorInfo(name: String, photo: String) {
         if (activityChatBinding.operatorName.text != name) {
+            ProProfsChat.operatorName = name
+            ProProfsChat.operatorPhoto = photo
             activityChatBinding.operatorName.text = name
             Glide
                 .with(applicationContext)
@@ -309,5 +437,31 @@ class ChatActivity : AppCompatActivity() {
             } catch (e: Exception) {
             }
         }
+    }
+
+    private fun uploadImage(file: File) {
+        val image = RequestBody.create(MediaType.parse("image/*"), file)
+        val imageMultipart = MultipartBody.Part.createFormData("fileName", file.name, image);
+
+        val pp_img_counter = RequestBody.create(MediaType.parse("text/plain"), "5")
+        val session_id_image =
+            RequestBody.create(MediaType.parse("text/plain"), chatSettingData!!.proprofs_session)
+        val site_id = RequestBody.create(MediaType.parse("text/plain"), siteId)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = ApiAdapter.apiClient.uploadImage(
+                    "5",
+                    imageMultipart,
+                    session_id_image,
+                    site_id
+                )
+                Log.d("Image", response.toString())
+            } catch (e: Exception) {
+                Log.d("Image", e.toString())
+            }
+
+        }
+
     }
 }

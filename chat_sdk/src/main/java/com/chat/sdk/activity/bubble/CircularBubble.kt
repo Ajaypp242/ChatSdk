@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide
 import com.chat.sdk.R
 import com.chat.sdk.modal.ChatStyle
 import com.chat.sdk.network.BaseUrl
-import com.chat.sdk.util.Constant
+import com.chat.sdk.util.ScreenUtil
 import com.mikhaellopez.circularimageview.CircularImageView
 
 internal class CircularBubble() {
@@ -55,9 +55,9 @@ internal class CircularBubble() {
                 else -> {
                     val imageView = createIcon(view.context, chatStyle.embedded_window)
                     this!!.addView(imageView)
-                    setBubbleIconConstraint(this)
                 }
             }
+            setBubbleIconConstraint(this)
             addView(onlineIcon(view.context))
             setOnlineIconConstraint(this)
         }
@@ -78,7 +78,8 @@ internal class CircularBubble() {
     private fun onlineIcon(context: Context): LinearLayout {
         val icon = LinearLayout(context)
         icon.id = R.id.status
-        icon.layoutParams = LinearLayout.LayoutParams(60, 60)
+        val width = ScreenUtil().getScreenWidth(context)/5
+        icon.layoutParams = LinearLayout.LayoutParams(width, width)
         icon.setBackgroundResource(R.drawable.offline_icon)
         return icon
     }
@@ -98,7 +99,7 @@ internal class CircularBubble() {
             ConstraintSet.PARENT_ID,
             ConstraintSet.RIGHT
         )
-        constraintSet.setMargin(R.id.status, ConstraintSet.RIGHT, 15)
+        constraintSet.setMargin(R.id.status, ConstraintSet.TOP, 15)
         constraintSet.applyTo(circularView)
     }
 
@@ -135,10 +136,11 @@ internal class CircularBubble() {
     private fun createImageView(context: Context): CircularImageView {
         val imageView = CircularImageView(context)
         imageView.id = R.id.bubble_icon
-        imageView.layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+        val layoutParams = LinearLayout.LayoutParams(
+            ScreenUtil().getScreenWidth(context)-20,
+            ScreenUtil().getScreenWidth(context)-20
         )
+        imageView.layoutParams = layoutParams
         imageView.borderWidth = 0F
         return imageView
     }
@@ -151,7 +153,7 @@ internal class CircularBubble() {
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         textView.text = text
-        textView.textSize = 18F
+        textView.textSize = 16F
         textView.setTextColor(Color.WHITE)
         textView.typeface = Typeface.DEFAULT_BOLD
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -164,8 +166,8 @@ internal class CircularBubble() {
     private fun createIcon(context: Context, type: String): ImageView {
         val imageView = ImageView(context)
         imageView.id = R.id.bubble_icon
-        imageView.layoutParams =
-            LinearLayout.LayoutParams(Constant.BUBBLE_WIDTH - 150, Constant.BUBBLE_HEIGHT - 150)
+        val layoutParams = LinearLayout.LayoutParams(ScreenUtil().getScreenWidth(context)-80 , ScreenUtil().getScreenWidth(context)-80)
+        imageView.layoutParams = layoutParams
         when (type) {
             CircularBubbleType.ICON_7.type -> {
                 imageView.setImageResource(R.drawable.seven)

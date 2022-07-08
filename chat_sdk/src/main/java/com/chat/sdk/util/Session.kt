@@ -1,4 +1,4 @@
-package com.chat.sdk.session
+package com.chat.sdk.util
 
 import android.annotation.SuppressLint
 import android.content.Context
