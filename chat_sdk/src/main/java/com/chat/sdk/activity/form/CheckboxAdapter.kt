@@ -7,7 +7,7 @@ import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.chat.sdk.R
 
-class CheckboxAdapter(private val childAdaptorResponse: ChildAdaptorResponse) :
+internal class CheckboxAdapter(private val childAdaptorResponse: ChildAdaptorResponse) :
     RecyclerView.Adapter<CheckboxAdapter.CheckboxViewHolder>() {
     private var options: List<String>? = null
     var response=ArrayList<String>()

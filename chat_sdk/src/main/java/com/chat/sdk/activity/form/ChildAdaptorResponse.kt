@@ -1,5 +1,5 @@
 package com.chat.sdk.activity.form
 
-interface ChildAdaptorResponse {
+internal interface ChildAdaptorResponse {
     fun setResponse(value:String, position:Int)
 }

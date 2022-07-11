@@ -49,7 +49,7 @@ import okhttp3.RequestBody
 import java.io.*
 
 
-class ChatActivity : AppCompatActivity() {
+internal class ChatActivity : AppCompatActivity() {
     private var chatSettingData: ChatSettingData? = null
 
     //    private var visitorName: String? = null

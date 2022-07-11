@@ -17,7 +17,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CommonUtil {
+internal class CommonUtil {
 
     fun customLoadingDialogAlert(context: Context, layoutInflater: LayoutInflater, heading:String, color:String): AlertDialog {
         val builder = AlertDialog.Builder(context)
@@ -90,5 +90,10 @@ class CommonUtil {
     fun getCurrentTime(): String {
         val dateFormat: DateFormat = SimpleDateFormat("hh:mm a")
         return dateFormat.format(Date())
+    }
+
+
+    fun convertLinksToAnchor(text: String){
+//        text.replace("/(?:(https?\\:\\/\\/[^\\s]+))/g")
     }
 }

@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-object ApiAdapter {
+internal object ApiAdapter {
     private val logging =  HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addInterceptor(logging).build()
 

@@ -8,7 +8,7 @@ import com.chat.sdk.R
 import com.chat.sdk.util.Constant
 import com.chat.sdk.util.ScreenUtil
 
-class Bubble(context: Context) : FrameLayout(context) {
+internal class Bubble(context: Context) : FrameLayout(context) {
     init {
         addView(createBubble(context))
     }

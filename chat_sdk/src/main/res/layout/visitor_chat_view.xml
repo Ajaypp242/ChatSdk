@@ -16,6 +16,8 @@
         android:padding="16dp"
         android:textColor="#030303"
         android:textSize="@dimen/message_text_size"
+        android:textColorLink="@color/link_color"
+        android:autoLink="web"
       />
     <TextView
         android:layout_width="match_parent"

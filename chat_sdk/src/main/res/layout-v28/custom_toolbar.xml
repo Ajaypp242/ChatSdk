@@ -39,6 +39,7 @@
             android:layout_height="match_parent"
             android:id="@+id/minimize_icon"
             android:src="@drawable/ic_down_arrow"
+            android:layout_marginRight="10dp"
             />
         <ImageView
             android:layout_width="wrap_content"

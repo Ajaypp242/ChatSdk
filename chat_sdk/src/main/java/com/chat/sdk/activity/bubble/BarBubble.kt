@@ -13,7 +13,7 @@ import com.chat.sdk.R
 import com.chat.sdk.modal.ChatStyle
 
 @SuppressLint("ViewConstructor")
-class BarBubble(context: Context, chatStyle: ChatStyle) : FrameLayout(context) {
+internal class BarBubble(context: Context, chatStyle: ChatStyle) : FrameLayout(context) {
     init {
       addView(createBarLayout(chatStyle))
     }

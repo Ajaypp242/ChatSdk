@@ -1,6 +1,6 @@
 package com.chat.sdk.activity.bubble
 
-enum class CircularBubbleType(val type:String) {
+internal enum class CircularBubbleType(val type:String) {
     ICON_3("3"),
     ICON_7("7"),
     ICON_10("10"),

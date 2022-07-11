@@ -2,7 +2,7 @@ package com.chat.sdk.modal
 
 import java.io.Serializable
 
-data class ChatSettingData(
+internal data class ChatSettingData(
     val chat_style: ChatStyle,
     val chat_form_text: List<ChatFormText>,
     val chat_form_field: List<ChatFormField>,

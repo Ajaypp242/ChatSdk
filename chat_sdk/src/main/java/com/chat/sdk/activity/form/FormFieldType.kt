@@ -1,6 +1,6 @@
 package com.chat.sdk.activity.form
 
-enum class FormFieldType(val type:String) {
+internal enum class FormFieldType(val type:String) {
     TEXT("text"),
     TEXTAREA("textarea"),
     RADIO("radio"),

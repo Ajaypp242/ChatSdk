@@ -7,7 +7,7 @@ import android.widget.RadioButton
 import androidx.recyclerview.widget.RecyclerView
 import com.chat.sdk.R
 
-class RadioAdapter(private val childAdaptorResponse: ChildAdaptorResponse) : RecyclerView.Adapter<RadioAdapter.RadioViewHolder>() {
+internal class RadioAdapter(private val childAdaptorResponse: ChildAdaptorResponse) : RecyclerView.Adapter<RadioAdapter.RadioViewHolder>() {
     private var selectedItem = -1
     private var options: List<String>? = null
     private  var parentPosition:Int = -1

@@ -1,3 +1,3 @@
 package com.chat.sdk.modal
 
-data class PreChatResponse(val result:Int)
+internal data class PreChatResponse(val result:Int)

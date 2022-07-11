@@ -4,12 +4,12 @@ import android.view.View
 import android.widget.LinearLayout
 import com.chat.sdk.R
 
-enum class OperatorStatusType(val type:Int) {
+internal enum class OperatorStatusType(val type:Int) {
     ONLINE(1),
     OFFLINE(0)
 }
 
-class OperatorStatus()  {
+internal class OperatorStatus()  {
     companion object Status {
         fun changeStatus(bubble:View, status:OperatorStatusType){
             if(status  ==  OperatorStatusType.ONLINE){

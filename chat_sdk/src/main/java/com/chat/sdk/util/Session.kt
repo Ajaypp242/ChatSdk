@@ -7,7 +7,7 @@ import android.util.Log
 import com.chat.sdk.util.Constant
 import kotlinx.coroutines.awaitAll
 
-class Session(private val sharedPreferences: SharedPreferences) {
+internal class Session(private val sharedPreferences: SharedPreferences) {
 
     @SuppressLint("CommitPrefEdits")
     fun setKey(key: String, value: String?) {

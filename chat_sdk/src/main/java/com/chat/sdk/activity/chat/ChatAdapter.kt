@@ -2,6 +2,7 @@ package com.chat.sdk.activity.chat
 
 import android.content.Context
 import android.graphics.Color
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,7 @@ import com.chat.sdk.R
 import com.chat.sdk.modal.ChatStyle
 import com.chat.sdk.modal.Message
 
-class ChatAdapter(private val chatStyle: ChatStyle, private val context: Context) :
+internal class ChatAdapter(private val chatStyle: ChatStyle, private val context: Context) :
     RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
     private val operatorMessageView = 1
     private val visitorMessageView = 2
@@ -73,6 +74,7 @@ class ChatAdapter(private val chatStyle: ChatStyle, private val context: Context
             }
             val item = messages?.get(position)
             message.text = item?.message
+            message.movementMethod = LinkMovementMethod.getInstance()
             if (chatStyle.addchtm_time == "Y") {
                 time.visibility = View.VISIBLE
             } else {

@@ -1,13 +1,9 @@
 package com.chat.demo
 
-import android.graphics.Color
 import com.chat.sdk.ProProfsChat
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.chat.demo.databinding.ActivityMainBinding
-import com.chat.sdk.activity.bubble.BarBubble
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        val view = binding.root
 //        setContentView(view)
-////        ProProfsChat.messages
+        ProProfsChat(this,"")
         val bubble = ProProfsChat(this,live_site_id).init()
         if (bubble != null) {
             ll.addView(bubble)

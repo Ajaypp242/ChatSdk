@@ -19,7 +19,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class FormUtil {
+internal class FormUtil {
     fun getCatTypeFields(
         data: List<ChatFormField>,
         chatWindowType: FormType

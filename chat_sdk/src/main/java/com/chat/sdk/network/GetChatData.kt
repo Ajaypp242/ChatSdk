@@ -5,7 +5,7 @@ import com.chat.sdk.util.Constant
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-class GetChatData {
+internal class GetChatData {
 
     companion object {
         private var LOOP: Boolean = true

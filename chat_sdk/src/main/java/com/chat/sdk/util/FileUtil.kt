@@ -13,7 +13,7 @@ import android.provider.MediaStore
 import android.provider.OpenableColumns
 import java.io.*
 
-class FileUtils {
+internal class FileUtils {
 
     @SuppressLint("Range")
     @Throws(Exception::class)

@@ -31,7 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class FormActivity : AppCompatActivity() {
+internal class FormActivity : AppCompatActivity() {
     private var chatSettingData: ChatSettingData? = null
     private var currentFormType: FormType? = null
     private var siteId = ""

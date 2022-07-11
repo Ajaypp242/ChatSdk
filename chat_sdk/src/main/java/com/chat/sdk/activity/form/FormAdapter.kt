@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chat.sdk.R
 import com.chat.sdk.modal.ChatFormField
 
-class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ChildAdaptorResponse {
+internal class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ChildAdaptorResponse {
     var chatFormField: List<ChatFormField>? = null
     private var context: Context? = null
     fun setFormFields(chatFormFields: List<ChatFormField>, context: Context) {

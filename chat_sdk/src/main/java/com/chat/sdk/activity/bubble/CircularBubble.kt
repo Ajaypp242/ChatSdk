@@ -99,7 +99,7 @@ internal class CircularBubble() {
             ConstraintSet.PARENT_ID,
             ConstraintSet.RIGHT
         )
-        constraintSet.setMargin(R.id.status, ConstraintSet.TOP, 15)
+        constraintSet.setMargin(R.id.status, ConstraintSet.TOP, 20)
         constraintSet.applyTo(circularView)
     }
 

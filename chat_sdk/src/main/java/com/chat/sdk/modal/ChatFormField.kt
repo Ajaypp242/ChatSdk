@@ -2,7 +2,7 @@ package com.chat.sdk.modal
 
 import java.io.Serializable
 
-data class ChatFormField(val fleg:String,
+internal data class ChatFormField(val fleg:String,
                          val fld_name:String,
                          val fld_type:String,
                          val js:String,

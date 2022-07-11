@@ -1,13 +1,9 @@
 package com.chat.sdk
 
-import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.view.View
-import androidx.core.content.ContextCompat.startActivity
 import com.chat.sdk.activity.bubble.*
 import com.chat.sdk.activity.chat.ChatActivity
 import com.chat.sdk.activity.chat.ChatStatusType
@@ -28,11 +24,14 @@ class ProProfsChat(private val context: Context, private val site_id: String) {
     private var operatorStatus: OperatorStatusType = OperatorStatusType.OFFLINE
     private lateinit var sharedPreferences: SharedPreferences
     private var chatStatus: String? = null
-   companion object{
-       internal  var messages : ArrayList<Message>? = null
+
+    internal companion object {
+        internal var messages: ArrayList<Message>? = null
         var operatorName = ""
-         var operatorPhoto = ""
-   }
+        var operatorPhoto = ""
+    }
+
+
     fun init(): View? {
         sharedPreferences =
             context.getSharedPreferences(Constant.PREFERENCE_NAME, Context.MODE_PRIVATE)
@@ -74,7 +73,7 @@ class ProProfsChat(private val context: Context, private val site_id: String) {
             ChatData.site_id = site_id
             ChatData.ProProfs_Session = chatSettingData?.proprofs_session
             ChatData.proprofs_language_id = chatSettingData?.proprofs_language_id
-           GetChatData.chatDataSharedFlow = GetChatData().getSharedFlow()
+            GetChatData.chatDataSharedFlow = GetChatData().getSharedFlow()
 
             CoroutineScope(Dispatchers.IO).launch {
                 GetChatData.chatDataSharedFlow.collect { value ->
@@ -91,7 +90,8 @@ class ProProfsChat(private val context: Context, private val site_id: String) {
     }
 
     private fun updateOperatorStatus(operators: List<Operator>) {
-        val newStatus = if (operators.isEmpty()) OperatorStatusType.OFFLINE else OperatorStatusType.ONLINE
+        val newStatus =
+            if (operators.isEmpty()) OperatorStatusType.OFFLINE else OperatorStatusType.ONLINE
         if (operatorStatus != newStatus) {
             operatorStatus = newStatus
             OperatorStatus.changeStatus(bubble!!, operatorStatus)
@@ -129,7 +129,8 @@ class ProProfsChat(private val context: Context, private val site_id: String) {
     }
 
     private fun launchFormActivity() {
-        val formType: FormType = if (chatSettingData!!.operator_status.isEmpty()) FormType.OFFLINE else FormType.PRE_CHAT
+        val formType: FormType =
+            if (chatSettingData!!.operator_status.isEmpty()) FormType.OFFLINE else FormType.PRE_CHAT
         val starter = Intent(context, FormActivity::class.java)
         starter.putExtra("chatSettingData", chatSettingData)
         starter.putExtra("site_id", site_id)

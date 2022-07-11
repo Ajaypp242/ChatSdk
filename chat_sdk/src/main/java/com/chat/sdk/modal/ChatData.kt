@@ -2,7 +2,7 @@ package com.chat.sdk.modal
 
 import com.chat.sdk.util.CommonUtil
 
-data class Message(
+internal data class Message(
     val id_ip: String,
     val message: String,
     val msg_status: String,
@@ -13,13 +13,13 @@ data class Message(
     val v_o: String
 )
 
-data class OperatorDetails(
+internal data class OperatorDetails(
     val photourl: String,
     val name: String,
 )
 
 
-data class ChatData(
+internal data class ChatData(
     val chat_status: String,
     val messages: ArrayList<Message>,
     val operator_status: List<Operator>,

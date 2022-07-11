@@ -3,7 +3,7 @@ package com.chat.sdk.modal
 import java.io.Serializable
 
 
-data class ChatStyle(
+internal data class ChatStyle(
     val embedded_window:String,
     val chead_color:String,
     val cwin_size:String,

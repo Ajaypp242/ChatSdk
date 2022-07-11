@@ -8,7 +8,7 @@ import retrofit2.Response
 import retrofit2.http.*
 import java.io.File
 
-interface ApiClient {
+internal interface ApiClient {
     @FormUrlEncoded
     @POST("getchatsettings")
     suspend fun getData(

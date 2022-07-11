@@ -9,7 +9,7 @@ import com.chat.sdk.network.GetChatData
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
-class ChatViewModal : ViewModel() {
+internal class ChatViewModal : ViewModel() {
     private val errorMessage = MutableLiveData<String>()
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
