@@ -12,13 +12,22 @@
         android:maxWidth="300dp"
         android:minWidth="80dp"
         android:gravity="end"
-        android:background="@drawable/opertator_chat_bubble"
+        android:background="@drawable/operator_chat_bubble"
         android:padding="16dp"
         android:text=""
         android:textColor="#030303"
         android:textSize="@dimen/form_title_size"
         android:textColorLink="@color/link_color"
         android:autoLink="web"
+        android:visibility="gone"
+        />
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/image"
+        android:background="@drawable/operator_chat_bubble"
+        android:padding="16dp"
+        android:visibility="gone"
         />
     <TextView
         android:layout_width="match_parent"

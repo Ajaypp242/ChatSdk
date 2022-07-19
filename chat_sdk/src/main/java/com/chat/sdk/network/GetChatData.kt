@@ -20,20 +20,23 @@ internal class GetChatData {
         CoroutineScope(Dispatchers.IO).launch {
             while (true) {
                 if (LOOP) {
-                    val response = ApiAdapter.apiClient.getChat(
-                        ChatData.site_id,
-                        ChatData.proprofs_language_id,
-                        ChatData.ProProfs_Session,
-                        ChatData.ProProfs_Msg_Counter,
-                        ChatData.ProProfs_Visitor_TimeZone,
-                        ChatData.ProProfs_invitation_type,
-                        ChatData.ProProfs_Current_URL,
-                        ChatData.ProProfsGroupIdHardCoded,
-                        ChatData.ProProfs_Visitor_name,
-                        ChatData.ProProfs_Visitor_email,
-                        ChatData.ProProfs_typing_message
-                    )
-                    chatDataSharedFlow.emit(response.body()!!)
+                    try {
+                        val response = ApiAdapter.apiClient.getChat(
+                            ChatData.site_id,
+                            ChatData.proprofs_language_id,
+                            ChatData.ProProfs_Session,
+                            ChatData.ProProfs_Msg_Counter,
+                            ChatData.ProProfs_Visitor_TimeZone,
+                            ChatData.ProProfs_invitation_type,
+                            ChatData.ProProfs_Current_URL,
+                            ChatData.ProProfsGroupIdHardCoded,
+                            ChatData.ProProfs_Visitor_name,
+                            ChatData.ProProfs_Visitor_email,
+                            ChatData.ProProfs_typing_message
+                        )
+                        chatDataSharedFlow.emit(response.body()!!)
+                    } catch (e: Exception){
+                    }
                 }
                 delay(Constant.CHAT_API_DELAY)
             }

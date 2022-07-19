@@ -138,10 +138,10 @@ internal interface ApiClient {
     @POST("uploadimage")
     suspend fun uploadImage(
         @Field("pp_img_counter") pp_img_counter: String,
-//        @Part pp_file: MultipartBody.Part,
-        @Field("pp_file") pp_file: MultipartBody.Part,
-        @Field("session_id_image") session_id_image: RequestBody,
-        @Field("site_id") site_id: RequestBody,
+        @Field("sdk_image_url") pp_file:String,
+        @Field("session_id_image") session_id_image: String,
+        @Field("site_id") site_id: String,
+        @Field("from") from: String,
 
         ): Response<Any>
 }

@@ -1,7 +1,6 @@
 package com.chat.sdk.activity.chat
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -10,6 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.view.View.GONE
@@ -35,9 +35,8 @@ import com.chat.sdk.modal.Message
 import com.chat.sdk.network.ApiAdapter
 import com.chat.sdk.network.BaseUrl
 import com.chat.sdk.network.GetChatData
-import com.chat.sdk.util.Session
 import com.chat.sdk.util.CommonUtil
-import com.chat.sdk.util.Constant
+import com.chat.sdk.util.FileUtils
 import com.chat.sdk.util.FormUtil
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -62,7 +61,7 @@ internal class ChatActivity : AppCompatActivity() {
     private lateinit var dialog: AlertDialog
     private var lastMessageId = "0"
     override fun onCreate(savedInstanceState: Bundle?) {
-        overridePendingTransition(R.anim.slide_in,R.anim.slide_out)
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
         super.onCreate(savedInstanceState)
         activityChatBinding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(activityChatBinding.root)
@@ -149,7 +148,7 @@ internal class ChatActivity : AppCompatActivity() {
         if (ProProfsChat.messages != null) {
             adapter.setChatList(ProProfsChat.messages!!)
             activityChatBinding.chatRecyclerView.scrollToPosition(adapter.itemCount - 1)
-            updateOperatorInfo(ProProfsChat.operatorName,ProProfsChat.operatorPhoto)
+            updateOperatorInfo(ProProfsChat.operatorName, ProProfsChat.operatorPhoto)
         }
         dialog = CommonUtil().customLoadingDialogAlert(
             this,
@@ -178,7 +177,7 @@ internal class ChatActivity : AppCompatActivity() {
             sendMessage(activityChatBinding.messageBox.text.toString())
             activityChatBinding.messageBox.setText("")
         }
-        bindAttachmentFunction()
+        onFileChooseResult()
     }
 
 
@@ -247,15 +246,17 @@ internal class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun bindAttachmentFunction() {
+    private fun onFileChooseResult() {
         val imageResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
                     if (it.data != null) {
-                        val selectedImage: Uri? = it.data?.data
-                        val bitmap = getBitmapFromUri(selectedImage!!)
-                        val file = convertImageUriToFile(bitmap)
-                        uploadImage(file)
+                        val base64 = FileUtils().uriToBase64(it.data?.data!!, applicationContext)
+                        val bitmap  = FileUtils().base64ToBitmap(base64)
+                        activityChatBinding.operatorImage.setImageBitmap(bitmap)
+                        if (base64 != null) {
+                            uploadImage(base64)
+                        }
                     }
                 }
             }
@@ -267,58 +268,6 @@ internal class ChatActivity : AppCompatActivity() {
             imageResult.launch(intent)
         }
     }
-
-    fun getBase64FromPath(path: String?): String? {
-        var base64 = ""
-        try { /*from   w w w .  ja  va  2s  .  c om*/
-            val file = File(path)
-            val buffer = ByteArray(file.length().toInt() + 100)
-            val length = FileInputStream(file).read(buffer)
-            base64 = Base64.encodeToString(
-                buffer, 0, length,
-                Base64.DEFAULT
-            )
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return base64
-    }
-
-
-    fun convertImageUriToFile(bitmap: Bitmap): File {
-        val file = File(applicationContext.cacheDir, "new");
-        file.createNewFile()
-        val bos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos);
-        val bitmapdata = bos.toByteArray()
-        var fos: FileOutputStream? = null
-        try {
-            fos = FileOutputStream(file)
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace();
-        }
-        try {
-            fos?.write(bitmapdata);
-            fos?.flush();
-            fos?.close();
-        } catch (e: IOException) {
-            e.printStackTrace();
-        }
-        return file
-    }
-
-
-    @Throws(IOException::class)
-    private fun getBitmapFromUri(uri: Uri): Bitmap {
-        val parcelFileDescriptor: ParcelFileDescriptor =
-            contentResolver.openFileDescriptor(uri, "r")!!
-        val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
-        val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
-        parcelFileDescriptor.close()
-        return image
-    }
-
-
 
     private fun addToolbar() {
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
@@ -384,6 +333,7 @@ internal class ChatActivity : AppCompatActivity() {
     }
 
     private fun goToPreviousActivity(transcriptId: Int) {
+        ProProfsChat.resetMessagesAndOperatorDetails()
         val intent = Intent(applicationContext, FormActivity::class.java)
         val postFormIsEmpty = FormUtil().getCatTypeFields(
             chatSettingData!!.chat_form_field,
@@ -439,29 +389,20 @@ internal class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadImage(file: File) {
-        val image = RequestBody.create(MediaType.parse("image/*"), file)
-        val imageMultipart = MultipartBody.Part.createFormData("fileName", file.name, image);
-
-        val pp_img_counter = RequestBody.create(MediaType.parse("text/plain"), "5")
-        val session_id_image =
-            RequestBody.create(MediaType.parse("text/plain"), chatSettingData!!.proprofs_session)
-        val site_id = RequestBody.create(MediaType.parse("text/plain"), siteId)
-
+    private fun uploadImage(file: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = ApiAdapter.apiClient.uploadImage(
                     "5",
-                    imageMultipart,
-                    session_id_image,
-                    site_id
+                    file,
+                    chatSettingData!!.proprofs_session,
+                    siteId,
+                    "sdk"
                 )
                 Log.d("Image", response.toString())
             } catch (e: Exception) {
                 Log.d("Image", e.toString())
             }
-
         }
-
     }
 }

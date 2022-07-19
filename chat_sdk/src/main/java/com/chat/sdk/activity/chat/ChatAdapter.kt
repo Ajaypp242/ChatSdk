@@ -6,11 +6,11 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.chat.sdk.ProProfsChat
 import com.chat.sdk.R
 import com.chat.sdk.modal.ChatStyle
 import com.chat.sdk.modal.Message
@@ -30,8 +30,7 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
         this.messages?.addAll(messages)
     }
 
-    inner class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    }
+    inner class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         val view: View?
@@ -56,9 +55,10 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
         if (holder.itemViewType == visitorMessageView || holder.itemViewType == operatorMessageView) {
             val message: TextView = holder.itemView.findViewById(R.id.message)
             val time: TextView = holder.itemView.findViewById(R.id.time)
+            val image: ImageView = holder.itemView.findViewById(R.id.image)
+
             if (holder.itemViewType == visitorMessageView) {
                 message.setTextColor(Color.parseColor("#${chatStyle.chat_visitor_name_color}"))
-
                 val unwrappedDrawable =
                     AppCompatResources.getDrawable(context, R.drawable.visitor_chat_bubble)
                 val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
@@ -69,12 +69,19 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
                     )
                 }
                 message.background = wrappedDrawable
+                image.background = wrappedDrawable
             } else {
                 message.setTextColor(Color.parseColor("#${chatStyle.chat_operator_name_color}"))
             }
             val item = messages?.get(position)
-            message.text = item?.message
-            message.movementMethod = LinkMovementMethod.getInstance()
+            if(item?.rand_no == "i"){
+                image.visibility = ImageView.VISIBLE
+            } else {
+                message.text = item?.message
+                message.movementMethod = LinkMovementMethod.getInstance()
+                message.visibility = TextView.VISIBLE
+            }
+
             if (chatStyle.addchtm_time == "Y") {
                 time.visibility = View.VISIBLE
             } else {
@@ -82,7 +89,6 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
             }
             time.text = item?.msgtm
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -106,6 +112,5 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
                 view.id
             }
         }
-
     }
 }

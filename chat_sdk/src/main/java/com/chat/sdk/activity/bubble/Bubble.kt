@@ -5,7 +5,6 @@ import android.os.Build
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.chat.sdk.R
-import com.chat.sdk.util.Constant
 import com.chat.sdk.util.ScreenUtil
 
 internal class Bubble(context: Context) : FrameLayout(context) {
@@ -15,7 +14,8 @@ internal class Bubble(context: Context) : FrameLayout(context) {
 
     private fun createBubble(context: Context): ConstraintLayout {
         val bubble = ConstraintLayout(context)
-        bubble.layoutParams = ConstraintLayout.LayoutParams(ScreenUtil().getScreenWidth(context), ScreenUtil().getScreenWidth(context))
+       val layoutParams = ConstraintLayout.LayoutParams(ScreenUtil().getScreenWidth(context), ScreenUtil().getScreenWidth(context))
+        bubble.layoutParams = layoutParams
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             bubble.elevation = 15F
         }

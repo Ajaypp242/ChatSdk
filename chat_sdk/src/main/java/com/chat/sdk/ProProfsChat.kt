@@ -17,10 +17,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
 
-class ProProfsChat(private val context: Context, private val site_id: String) {
-    private var bubble: View? = null
+class ProProfsChat(private val context: Context, private val site_id: String) :
+    ProProfsChatInterface {
+    private lateinit var bubble: View
     private var chatSettingData: ChatSettingData? = null
-
     private var operatorStatus: OperatorStatusType = OperatorStatusType.OFFLINE
     private lateinit var sharedPreferences: SharedPreferences
     private var chatStatus: String? = null
@@ -29,16 +29,19 @@ class ProProfsChat(private val context: Context, private val site_id: String) {
         internal var messages: ArrayList<Message>? = null
         var operatorName = ""
         var operatorPhoto = ""
+
+        fun resetMessagesAndOperatorDetails() {
+            messages = null
+            operatorName = ""
+            operatorPhoto = ""
+        }
     }
 
 
-    fun init(): View? {
+    override fun init(): View {
         sharedPreferences =
             context.getSharedPreferences(Constant.PREFERENCE_NAME, Context.MODE_PRIVATE)
         val sessionId = Session(sharedPreferences).getKey(Constant.SESSION_KEY)
-        if (bubble != null) {
-            return bubble
-        }
         bubble = Bubble(context)
         CoroutineScope(Dispatchers.Main).launch {
             getData(sessionId, sharedPreferences)
@@ -62,7 +65,7 @@ class ProProfsChat(private val context: Context, private val site_id: String) {
                 Constant.SESSION_KEY,
                 chatSettingData!!.proprofs_session
             )
-            CircularBubble().configureBubble(bubble!!, chatSettingData!!.chat_style)
+            CircularBubble().configureBubble(bubble, chatSettingData!!.chat_style)
             getChatData()
         } catch (e: Exception) {
         }
@@ -83,18 +86,17 @@ class ProProfsChat(private val context: Context, private val site_id: String) {
                 }
             }
 
-            bubble!!.setOnClickListener {
+            bubble.setOnClickListener {
                 navigationOnChatStatus()
             }
         }
     }
 
     private fun updateOperatorStatus(operators: List<Operator>) {
-        val newStatus =
-            if (operators.isEmpty()) OperatorStatusType.OFFLINE else OperatorStatusType.ONLINE
+        val newStatus = if (operators.isEmpty()) OperatorStatusType.OFFLINE else OperatorStatusType.ONLINE
         if (operatorStatus != newStatus) {
             operatorStatus = newStatus
-            OperatorStatus.changeStatus(bubble!!, operatorStatus)
+            OperatorStatus.changeStatus(bubble, operatorStatus)
         }
     }
 

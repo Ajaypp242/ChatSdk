@@ -46,6 +46,7 @@ internal class FormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         activityFormBinding = ActivityFormBinding.inflate(layoutInflater)
         setContentView(activityFormBinding.root)
+        ProProfsChat.resetMessagesAndOperatorDetails()
         getIntentData()
         ratingUISetup()
         addToolbar()
@@ -324,6 +325,7 @@ internal class FormActivity : AppCompatActivity() {
     private fun launchChatActivity(name: String, email: String) {
         ChatData.ProProfs_Visitor_name = name
         ChatData.ProProfs_Visitor_email = email
+
         val sharedPreferences = applicationContext.getSharedPreferences(Constant.PREFERENCE_NAME, Context.MODE_PRIVATE)
         Session(sharedPreferences).setKey(Constant.VISITOR_NAME, name)
         Session(sharedPreferences).setKey(Constant.VISITOR_EMAIL, email)

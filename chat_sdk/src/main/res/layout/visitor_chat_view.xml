@@ -16,9 +16,20 @@
         android:padding="16dp"
         android:textColor="#030303"
         android:textSize="@dimen/message_text_size"
+        android:visibility="gone"
         android:textColorLink="@color/link_color"
         android:autoLink="web"
       />
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/image"
+        android:background="@drawable/visitor_chat_bubble"
+        android:layout_gravity="end"
+        android:padding="16dp"
+        android:visibility="gone"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
