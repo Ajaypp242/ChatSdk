@@ -1,12 +1,9 @@
 package com.chat.sdk.network
 
 import com.chat.sdk.modal.*
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.http.*
-import java.io.File
 
 internal interface ApiClient {
     @FormUrlEncoded
@@ -123,27 +120,15 @@ internal interface ApiClient {
         @Field("ProProfs_Session") ProProfs_Session: String
     )
 
-//    @Multipart
-//    @POST("uploadimage")
-//    suspend fun uploadImage(
-//        @Part("pp_img_counter") pp_img_counter: RequestBody,
-////        @Part pp_file: MultipartBody.Part,
-//        @Part("pp_file") pp_file: MultipartBody.Part,
-//        @Part("session_id_image") session_id_image: RequestBody,
-//        @Part("site_id") site_id: RequestBody,
-//
-//        ): Response<Any>
-
     @FormUrlEncoded
     @POST("uploadimage")
     suspend fun uploadImage(
         @Field("pp_img_counter") pp_img_counter: String,
-        @Field("sdk_image_url") pp_file:String,
         @Field("session_id_image") session_id_image: String,
         @Field("site_id") site_id: String,
         @Field("from") from: String,
-
-        ): Response<Any>
+        @Field("sdk_image_url") sdk_image_url:String,
+        ): Response<ImageUploadResponse>
 }
 
 

@@ -17,7 +17,6 @@ internal class OperatorStatus()  {
             } else {
                 bubble.findViewById<LinearLayout>(R.id.status).setBackgroundResource(R.drawable.offline_icon)
             }
-
         }
     }
 }

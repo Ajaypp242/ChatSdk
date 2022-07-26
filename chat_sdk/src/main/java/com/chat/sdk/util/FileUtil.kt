@@ -1,19 +1,11 @@
 package com.chat.sdk.util
 
-import android.annotation.SuppressLint
-import android.content.ContentUris
 import android.content.Context
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.provider.DocumentsContract
-import android.provider.MediaStore
-import android.provider.OpenableColumns
 import android.util.Base64
-import android.util.Log
+import android.webkit.MimeTypeMap
 import java.io.*
 
 internal class FileUtils {
@@ -26,6 +18,12 @@ internal class FileUtils {
             error.printStackTrace()
         }
         return null
+    }
+
+    fun getFileExtension(uri: Uri, context: Context): String? {
+        val contentResolver = context.contentResolver
+        val mime = MimeTypeMap.getSingleton()
+        return mime.getExtensionFromMimeType(contentResolver.getType(uri))
     }
 
     fun base64ToBitmap(string: String?): Bitmap? {

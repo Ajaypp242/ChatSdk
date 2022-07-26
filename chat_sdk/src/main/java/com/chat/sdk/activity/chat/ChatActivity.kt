@@ -2,15 +2,9 @@ package com.chat.sdk.activity.chat
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
-import android.os.ParcelFileDescriptor
-import android.provider.MediaStore
-import android.util.Base64
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -42,17 +36,11 @@ import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.*
-
 
 internal class ChatActivity : AppCompatActivity() {
     private var chatSettingData: ChatSettingData? = null
-
-    //    private var visitorName: String? = null
-//    private var visitorEmail: String? = null
+    //private var visitorName: String? = null
+    //private var visitorEmail: String? = null
     private var siteId: String = ""
     private lateinit var activityChatBinding: ActivityChatBinding
     private lateinit var viewModel: ChatViewModal
@@ -111,7 +99,6 @@ internal class ChatActivity : AppCompatActivity() {
                         operatorDetailsObject.get("photourl").asString
                     )
                 }
-
             }
         }
         viewModel.visitorMessage.observe(this) {
@@ -126,8 +113,8 @@ internal class ChatActivity : AppCompatActivity() {
 
     private fun getIntentData() {
         chatSettingData = intent.getSerializableExtra("chatSettingData") as ChatSettingData
-//        visitorName = intent.getStringExtra("name")
-//        visitorEmail = intent.getStringExtra("email")
+        //visitorName = intent.getStringExtra("name")
+        //visitorEmail = intent.getStringExtra("email")
         siteId = intent.getStringExtra("site_id").toString()
     }
 
@@ -153,7 +140,7 @@ internal class ChatActivity : AppCompatActivity() {
         dialog = CommonUtil().customLoadingDialogAlert(
             this,
             layoutInflater,
-            "Connecting...",
+            "Please Wait...",
             chatSettingData!!.chat_style.chead_color
         )
         if (adapter.itemCount == 0) {
@@ -251,11 +238,14 @@ internal class ChatActivity : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
                     if (it.data != null) {
-                        val base64 = FileUtils().uriToBase64(it.data?.data!!, applicationContext)
-                        val bitmap  = FileUtils().base64ToBitmap(base64)
-                        activityChatBinding.operatorImage.setImageBitmap(bitmap)
-                        if (base64 != null) {
-                            uploadImage(base64)
+                        val uri = it.data?.data
+                        val base64 = FileUtils().uriToBase64(uri!!, applicationContext)
+                        val fileExtension = FileUtils().getFileExtension(uri,applicationContext)
+                        Log.d("fileExtension",fileExtension.toString())
+//                        val bitmap  = FileUtils().base64ToBitmap("")
+//                        activityChatBinding.operatorImage.setImageBitmap(bitmap)
+                        if (base64 != null && fileExtension != null) {
+                            uploadImage(base64,fileExtension)
                         }
                     }
                 }
@@ -291,12 +281,13 @@ internal class ChatActivity : AppCompatActivity() {
         if (message.trim() != "") {
             val visitorMessage =
                 Message("", message, "", CommonUtil().getCurrentTime(), "", "", "null", "v")
+            Log.d("visitorMessage",visitorMessage.toString())
             val messageList = ArrayList<Message>()
             messageList.add(visitorMessage)
             viewModel.addMessage(messageList)
             CoroutineScope(Dispatchers.Main).launch {
                 try {
-                    val response = ApiAdapter.apiClient.sendVisitorMessage(
+                    ApiAdapter.apiClient.sendVisitorMessage(
                         chatSettingData?.proprofs_session, message
                     )
                 } catch (e: Exception) {
@@ -389,19 +380,28 @@ internal class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadImage(file: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+    private fun uploadImage(file: String,fileExtension:String) {
+        CoroutineScope(Dispatchers.Main).launch {
             try {
+               dialog.show()
                 val response = ApiAdapter.apiClient.uploadImage(
                     "5",
-                    file,
                     chatSettingData!!.proprofs_session,
                     siteId,
-                    "sdk"
-                )
-                Log.d("Image", response.toString())
+                    "sdk",
+                   "data:image/$fileExtension;base64,$file"
+                ).body()
+                if(response?.error == "0"){
+                    val visitorMessage =
+                        Message("", response.file_name, "", CommonUtil().getCurrentTime(), "", "i", "null", "v")
+                    Log.d("visitorMessage",visitorMessage.toString())
+                    val messageList = ArrayList<Message>()
+                    messageList.add(visitorMessage)
+                    viewModel.addMessage(messageList)
+                }
+               dialog.dismiss()
             } catch (e: Exception) {
-                Log.d("Image", e.toString())
+                dialog.dismiss()
             }
         }
     }

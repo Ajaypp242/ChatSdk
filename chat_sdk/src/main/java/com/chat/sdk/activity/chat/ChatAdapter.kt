@@ -3,6 +3,7 @@ package com.chat.sdk.activity.chat
 import android.content.Context
 import android.graphics.Color
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +12,12 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.chat.sdk.ProProfsChat
 import com.chat.sdk.R
 import com.chat.sdk.modal.ChatStyle
 import com.chat.sdk.modal.Message
+import com.chat.sdk.network.BaseUrl
 
 internal class ChatAdapter(private val chatStyle: ChatStyle, private val context: Context) :
     RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
@@ -75,7 +79,12 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
             }
             val item = messages?.get(position)
             if(item?.rand_no == "i"){
+                Log.d("VISITORIMAGEURL","${BaseUrl.messageImageUrl}${ProProfsChat.account_id}/${item.message}")
                 image.visibility = ImageView.VISIBLE
+                    Glide.with(context)
+                    .load("${BaseUrl.messageImageUrl}${ProProfsChat.account_id}/${item.message}")
+                    .centerCrop()
+                    .into(image)
             } else {
                 message.text = item?.message
                 message.movementMethod = LinkMovementMethod.getInstance()

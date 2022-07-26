@@ -29,6 +29,7 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
         internal var messages: ArrayList<Message>? = null
         var operatorName = ""
         var operatorPhoto = ""
+        var account_id = "0"
 
         fun resetMessagesAndOperatorDetails() {
             messages = null
@@ -42,6 +43,7 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
         sharedPreferences =
             context.getSharedPreferences(Constant.PREFERENCE_NAME, Context.MODE_PRIVATE)
         val sessionId = Session(sharedPreferences).getKey(Constant.SESSION_KEY)
+        account_id = Session(sharedPreferences).getKey(Constant.ACCOUNT_ID)!!
         bubble = Bubble(context)
         CoroutineScope(Dispatchers.Main).launch {
             getData(sessionId, sharedPreferences)
@@ -64,6 +66,10 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
             Session(sharedPreferences).setKey(
                 Constant.SESSION_KEY,
                 chatSettingData!!.proprofs_session
+            )
+            Session(sharedPreferences).setKey(
+                Constant.ACCOUNT_ID,
+                chatSettingData!!.ProProfs_accounts
             )
             CircularBubble().configureBubble(bubble, chatSettingData!!.chat_style)
             getChatData()
@@ -131,8 +137,7 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
     }
 
     private fun launchFormActivity() {
-        val formType: FormType =
-            if (chatSettingData!!.operator_status.isEmpty()) FormType.OFFLINE else FormType.PRE_CHAT
+        val formType: FormType = if (chatSettingData!!.operator_status.isEmpty()) FormType.OFFLINE else FormType.PRE_CHAT
         val starter = Intent(context, FormActivity::class.java)
         starter.putExtra("chatSettingData", chatSettingData)
         starter.putExtra("site_id", site_id)

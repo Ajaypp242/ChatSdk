@@ -8,6 +8,7 @@ internal data class ChatSettingData(
     val chat_form_field: List<ChatFormField>,
     val proprofs_language_id: String,
     val proprofs_session: String,
+    val ProProfs_accounts: String,
     var operator_status: List<Operator>,
     val chat_status:ChatStatus
 ) : Serializable

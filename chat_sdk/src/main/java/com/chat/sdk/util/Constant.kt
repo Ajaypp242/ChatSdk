@@ -9,5 +9,6 @@ internal class Constant {
         const val PREFERENCE_NAME = "chat_sdk_preference"
         const val VISITOR_NAME = "name"
         const val VISITOR_EMAIL = "email"
+        const val ACCOUNT_ID = "0"
     }
 }

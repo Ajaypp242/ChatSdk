@@ -166,7 +166,7 @@ internal class CircularBubble() {
     private fun createIcon(context: Context, type: String): ImageView {
         val imageView = ImageView(context)
         imageView.id = R.id.bubble_icon
-        val layoutParams = LinearLayout.LayoutParams(ScreenUtil().getScreenWidth(context)-80 , ScreenUtil().getScreenWidth(context)-80)
+        val layoutParams = LinearLayout.LayoutParams(ScreenUtil().getScreenWidth(context)-50 , ScreenUtil().getScreenWidth(context)-50)
         imageView.layoutParams = layoutParams
         when (type) {
             CircularBubbleType.ICON_7.type -> {

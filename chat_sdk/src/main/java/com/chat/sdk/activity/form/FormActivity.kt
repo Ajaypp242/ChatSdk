@@ -235,7 +235,7 @@ internal class FormActivity : AppCompatActivity() {
                     formSubmitValue.dynamicStringParams,
                     formSubmitValue.dynamicArrayParams,
                     adapter.chatFormField!!.size.toString(),
-                    "SlRrSVBHMDUvMDBQdm1uRzYvTUplQT09"
+                    ""
                 )
                 Log.d("Form submit ","Form submit")
 
@@ -270,8 +270,8 @@ internal class FormActivity : AppCompatActivity() {
                     formSubmitValue.email,
                     formSubmitValue.name,
                     adapter.chatFormField!!.size.toString(),
-                    "1657017412",
-                    "SlRrSVBHMDUvMDBQdm1uRzYvTUplQT09",
+                    "",
+                    "",
                     "0",
                     "https://www.proprofschat.com/chat-page/?id=${chatSettingData!!.proprofs_session}",
                     "",
@@ -310,8 +310,8 @@ internal class FormActivity : AppCompatActivity() {
                     formSubmitValue.email,
                     formSubmitValue.name,
                     adapter.chatFormField!!.size.toString(),
-                    "1656420636",
-                    "SlRrSVBHMDUvMDBQdm1uRzYvTUplQT09",
+                    "",
+                    "",
                     "0",
                     "chat_sdk"
                 )
