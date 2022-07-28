@@ -70,6 +70,8 @@ internal interface ApiClient {
         @Field("pp_department_offline_label") pp_department_offline_label: String,
         @Field("off_pp_visitor_name") off_pp_visitor_name: String,
         @Field("off_pp_visitor_email") off_pp_visitor_email: String,
+        @FieldMap others_string: HashMap<String, String>,
+        @FieldMap others_array: HashMap<String, ArrayList<String>>,
         @Field("off_ProProfs_field_counter") off_ProProfs_field_counter: String,
         @Field("ProProfs_device_id") ProProfs_device_id: String,
         @Field("AccountCode") AccountCode: String,

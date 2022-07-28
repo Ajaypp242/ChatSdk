@@ -42,6 +42,7 @@ internal class FormUtil {
         val submitData = ArrayList<FormValidationSubmitType>()
         var isValid = true
         for ((index, field) in chatFormFields.withIndex()) {
+            Log.d("Form Filed",field.toString())
             if (field.js == "Y") {
                 if (field.isemail == "Y") {
                     if (field.value.isNullOrEmpty()) {
@@ -56,7 +57,7 @@ internal class FormUtil {
                         isValid = false
                     } else {
                         recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility =
-                            TextView.INVISIBLE
+                            TextView.GONE
                     }
                 } else {
                     if (field.value.isNullOrEmpty()) {
@@ -65,7 +66,7 @@ internal class FormUtil {
                             TextView.VISIBLE
                     } else {
                         recyclerView[index].findViewById<TextView>(R.id.err_msg).visibility =
-                            TextView.INVISIBLE
+                            TextView.GONE
                     }
                 }
             }
@@ -73,7 +74,8 @@ internal class FormUtil {
         return FormValidationReturnType(submitData, isValid)
     }
 
-    fun getFormValues(chatFormFields: List<ChatFormField>): FormSubmitValue {
+    fun getFormValues(chatFormFields: List<ChatFormField>, dynamic_field_tag:String): FormSubmitValue {
+        Log.d("chatFormFields",chatFormFields.toString())
         val dynamicStringParams: HashMap<String, String> = HashMap()
         val dynamicArrayParams: HashMap<String, ArrayList<String>> = HashMap()
         val name = ""
@@ -87,20 +89,22 @@ internal class FormUtil {
                     } else if (field.isemail == "Y") {
                         formSubmitValue.email = field.value.toString()
                     } else {
-                        dynamicStringParams["pp_fld_${index + 1}"] = field.value.toString()
+                        dynamicStringParams["${dynamic_field_tag}${index + 1}"] = field.value.toString()
                     }
                 }
                 FormFieldType.TEXTAREA.type -> {
-                    formSubmitValue.dynamicStringParams["pp_fld_${index + 1}"] =
+                    formSubmitValue.dynamicStringParams["${dynamic_field_tag}${index + 1}"] =
                         field.value.toString()
                 }
                 else -> {
                     val response = ArrayList<String>()
-                    val res = field.value?.split(",")
-                    for (value in res!!) {
-                        response.add(value)
+                    if(field.value != null){
+                        val res = field.value?.split(",")
+                        for (value in res!!) {
+                            response.add(value)
+                        }
+                        formSubmitValue.dynamicArrayParams["${dynamic_field_tag}${index + 1}"] = response
                     }
-                    formSubmitValue.dynamicArrayParams["pp_fld_${index + 1}"] = response
                 }
             }
         }
@@ -138,6 +142,4 @@ internal class FormUtil {
         }
 
     }
-
-
 }

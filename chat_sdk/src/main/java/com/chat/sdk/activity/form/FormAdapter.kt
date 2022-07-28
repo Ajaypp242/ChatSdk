@@ -1,5 +1,6 @@
 package com.chat.sdk.activity.form
 
+import android.R.attr.data
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chat.sdk.R
 import com.chat.sdk.modal.ChatFormField
 
-internal class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ChildAdaptorResponse {
+
+internal class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
+    ChildAdaptorResponse {
     var chatFormField: List<ChatFormField>? = null
     private var context: Context? = null
     fun setFormFields(chatFormFields: List<ChatFormField>, context: Context) {
@@ -33,6 +36,11 @@ internal class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(), 
             return chatFormField!!.size
         }
         return 0
+    }
+    fun clear() {
+        if (chatFormField != null) {
+            notifyItemRangeRemoved(0, itemCount)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -63,11 +71,13 @@ internal class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(), 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val text = chatFormField?.get(position)?.fld_name!!
-        val spannedText =  HtmlCompat.fromHtml(text,HtmlCompat.FROM_HTML_MODE_LEGACY)
-        holder.itemView.findViewById<TextView>(R.id.fld_name).text = HtmlCompat.fromHtml(spannedText.toString(),HtmlCompat.FROM_HTML_MODE_LEGACY)
-        holder.itemView.findViewById<TextView>(R.id.err_msg).text = chatFormField?.get(position)?.jsmsg
-        val requiredIcon =  holder.itemView.findViewById<TextView>(R.id.required_icon)
-        if(chatFormField?.get(position)?.js == "Y"){
+        val spannedText = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        holder.itemView.findViewById<TextView>(R.id.fld_name).text =
+            HtmlCompat.fromHtml(spannedText.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
+        val errMsg = holder.itemView.findViewById<TextView>(R.id.err_msg)
+        errMsg.text = chatFormField?.get(position)?.jsmsg
+        val requiredIcon = holder.itemView.findViewById<TextView>(R.id.required_icon)
+        if (chatFormField?.get(position)?.js == "Y") {
             requiredIcon.visibility = TextView.VISIBLE
         } else {
             requiredIcon.visibility = TextView.GONE
@@ -95,7 +105,7 @@ internal class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(), 
             }
             R.layout.form_field_dropdown -> {
                 val select = holder.itemView.findViewById<TextView>(R.id.value)
-                 select.setOnClickListener { it ->
+                select.setOnClickListener { it ->
                     val options = chatFormField!![position].sel_item.split(",").toTypedArray()
                     openDropdownDialog(options, it.context, position, select)
                 }
@@ -105,11 +115,23 @@ internal class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(), 
                     .addTextChangedListener(afterTextChanged = {
                         chatFormField!![position].value = it.toString()
                     })
+
+                holder.itemView.findViewById<TextView>(R.id.text)
+                    .setOnFocusChangeListener { _, hasFocus ->
+                        if (hasFocus) {
+                            errMsg.visibility = View.GONE
+                        }
+                    }
             }
         }
     }
 
-    private fun openDropdownDialog(data: Array<String>, context: Context, filedPosition: Int, item:TextView) {
+    private fun openDropdownDialog(
+        data: Array<String>,
+        context: Context,
+        filedPosition: Int,
+        item: TextView
+    ) {
         val alertDialog = AlertDialog.Builder(context)
         alertDialog.setItems(data) { _, pos ->
             chatFormField!![filedPosition].value = data[pos]

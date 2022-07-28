@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -76,8 +77,16 @@ internal class CommonUtil {
         return builder.create()
     }
 
+    fun getTimeZone():String{
+        val timezone = Date().timezoneOffset
+        if(timezone != 0){
+            return timezone.toString().trim('-')
+        }
+        return "0"
+    }
+
     @SuppressLint("SimpleDateFormat")
-    fun getTimeZone(): String {
+    fun getTimeZone2(): String {
         val calendar = Calendar.getInstance(
             TimeZone.getTimeZone("GMT"),
             Locale.getDefault()
@@ -92,8 +101,4 @@ internal class CommonUtil {
         return dateFormat.format(Date())
     }
 
-
-    fun convertLinksToAnchor(text: String){
-//        text.replace("/(?:(https?\\:\\/\\/[^\\s]+))/g")
-    }
 }

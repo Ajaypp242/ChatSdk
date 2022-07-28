@@ -11,6 +11,7 @@ import com.chat.sdk.activity.form.FormActivity
 import com.chat.sdk.modal.*
 import com.chat.sdk.network.ApiAdapter
 import com.chat.sdk.network.GetChatData
+import com.chat.sdk.util.CommonUtil
 import com.chat.sdk.util.Constant
 import com.chat.sdk.util.Session
 import kotlinx.coroutines.*
@@ -40,10 +41,11 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
 
 
     override fun init(): View {
+//        CommonUtil().timeInCurrentTimeZone("02:51 AM")
         sharedPreferences =
             context.getSharedPreferences(Constant.PREFERENCE_NAME, Context.MODE_PRIVATE)
         val sessionId = Session(sharedPreferences).getKey(Constant.SESSION_KEY)
-        account_id = Session(sharedPreferences).getKey(Constant.ACCOUNT_ID)!!
+//        account_id = Session(sharedPreferences).getKey(Constant.ACCOUNT_ID)!!
         bubble = Bubble(context)
         CoroutineScope(Dispatchers.Main).launch {
             getData(sessionId, sharedPreferences)
@@ -67,10 +69,11 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
                 Constant.SESSION_KEY,
                 chatSettingData!!.proprofs_session
             )
-            Session(sharedPreferences).setKey(
-                Constant.ACCOUNT_ID,
-                chatSettingData!!.ProProfs_accounts
-            )
+            account_id = chatSettingData!!.ProProfs_accounts
+//            Session(sharedPreferences).setKey(
+//                Constant.ACCOUNT_ID,
+//                chatSettingData!!.ProProfs_accounts
+//            )
             CircularBubble().configureBubble(bubble, chatSettingData!!.chat_style)
             getChatData()
         } catch (e: Exception) {

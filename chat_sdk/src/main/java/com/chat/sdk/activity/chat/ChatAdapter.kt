@@ -34,6 +34,18 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
         this.messages?.addAll(messages)
     }
 
+    fun updateVisitorLastMessageId(id:String){
+        if(messages != null){
+            this.messages!!.get(messages!!.size -1).sno = id
+            notifyDataSetChanged()
+        }
+    }
+
+    fun updateVisitorMessageStatus(messageId:String){
+        val messageIndex = this.messages?.indexOfFirst { it.sno == messageId }
+        this.messages!![messageIndex!!].msg_status = "2"
+        notifyDataSetChanged()
+    }
     inner class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
@@ -74,6 +86,16 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
                 }
                 message.background = wrappedDrawable
                 image.background = wrappedDrawable
+                val status: TextView = holder.itemView.findViewById(R.id.status)
+                val statusVal = messages?.get(position)?.msg_status
+                if(statusVal == "2"){
+                    status.text = "Seen"
+                    status.setTextColor(Color.parseColor("#11e711"))
+                } else {
+                    status.text = "Sent"
+                    status.setTextColor(Color.GRAY)
+                }
+
             } else {
                 message.setTextColor(Color.parseColor("#${chatStyle.chat_operator_name_color}"))
             }
@@ -81,6 +103,7 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
             if(item?.rand_no == "i"){
                 Log.d("VISITORIMAGEURL","${BaseUrl.messageImageUrl}${ProProfsChat.account_id}/${item.message}")
                 image.visibility = ImageView.VISIBLE
+                message.visibility = TextView.GONE
                     Glide.with(context)
                     .load("${BaseUrl.messageImageUrl}${ProProfsChat.account_id}/${item.message}")
                     .centerCrop()
@@ -89,6 +112,7 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
                 message.text = item?.message
                 message.movementMethod = LinkMovementMethod.getInstance()
                 message.visibility = TextView.VISIBLE
+                image.visibility = ImageView.GONE
             }
 
             if (chatStyle.addchtm_time == "Y") {

@@ -36,7 +36,7 @@ internal class FormActivity : AppCompatActivity() {
     private var currentFormType: FormType? = null
     private var siteId = ""
     private lateinit var viewModel: PrePostViewModal
-    private val adapter = FormAdapter()
+    private var adapter = FormAdapter()
     private var operatorStatus = OperatorStatusType.OFFLINE
     private var rating = 0
     private lateinit var activityFormBinding: ActivityFormBinding
@@ -84,6 +84,8 @@ internal class FormActivity : AppCompatActivity() {
                 adapter.chatFormField!!,
                 activityFormBinding.formRecyclerView
             )
+            Log.d("Form Valid",res.toString())
+//            return@setOnClickListener
             if (res.valid) {
                 if (currentFormType == FormType.PRE_CHAT) {
                     preSubmitAction()
@@ -195,11 +197,16 @@ internal class FormActivity : AppCompatActivity() {
     }
 
     private fun setFormScreen(chatSettingData: ChatSettingData, type: FormType) {
+        setLayoutManager()
+        setToolbarText()
         val text = FormUtil().getCatTextField(chatSettingData.chat_form_text, type)
-        activityFormBinding.startTextTitle.text = text.beforesubmit
+        activityFormBinding.formTextMessage.text = text.beforesubmit
         activityFormBinding.submit.text = text.txt_submit
+//        adapter.clear()
+//        adapter = FormAdapter()
         val layoutManager = LinearLayoutManager(applicationContext)
         activityFormBinding.formRecyclerView.layoutManager = layoutManager
+//        activityFormBinding.formRecyclerView.adapter = adapter
         val data = FormUtil().getCatTypeFields(chatSettingData.chat_form_field, type)
         val sortedData = FormUtil().sortFieldData(data)
         adapter.setFormFields(sortedData, this)
@@ -209,9 +216,20 @@ internal class FormActivity : AppCompatActivity() {
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.setCustomView(R.layout.custom_toolbar)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#${chatSettingData!!.chat_style.chead_color}")))
+
         findViewById<ImageView>(R.id.minimize_icon).setOnClickListener {
             finish()
             overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit)
+        }
+        setToolbarText()
+    }
+
+    private fun setToolbarText(){
+        val toolbarTitle = findViewById<TextView>(R.id.header_title)
+        if(currentFormType == FormType.OFFLINE){
+            toolbarTitle.text = chatSettingData?.chat_header_text?.chat_offline_text
+        } else {
+            toolbarTitle.text = chatSettingData?.chat_header_text?.chat_online_text
         }
     }
 
@@ -219,12 +237,13 @@ internal class FormActivity : AppCompatActivity() {
         val alertDialog = CommonUtil().customLoadingDialogAlert(
             this,
             layoutInflater,
-            "Please wait...",
+            "",
             chatSettingData!!.chat_style.chead_color
         )
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         alertDialog.show()
         CoroutineScope(Dispatchers.IO).launch {
-            val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!)
+            val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!,"post_pp_fld_")
             try {
                 ApiAdapter.apiClient.postChat(
                     transcript_id,
@@ -252,12 +271,13 @@ internal class FormActivity : AppCompatActivity() {
         val alertDialog = CommonUtil().customLoadingDialogAlert(
             this,
             layoutInflater,
-            "Please wait...",
+            "",
             chatSettingData!!.chat_style.chead_color
         )
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         alertDialog.show()
         CoroutineScope(Dispatchers.IO).launch {
-            val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!)
+            val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!,"pp_fld_")
             val preChatResponse: PreChatResponse?
             try {
                 val response = ApiAdapter.apiClient.preChat(
@@ -292,14 +312,16 @@ internal class FormActivity : AppCompatActivity() {
         val alertDialog = CommonUtil().customLoadingDialogAlert(
             this,
             layoutInflater,
-            "Please wait...",
+            "",
             chatSettingData!!.chat_style.chead_color
         )
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         alertDialog.show()
         val messageView: TextView = alertDialog.findViewById<TextView>(android.R.id.message)!!
         messageView.gravity = Gravity.CENTER
         CoroutineScope(Dispatchers.Main).launch {
-            val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!)
+            val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!,"off_pp_fld_")
+            Log.d("Offline Params",formSubmitValue.toString())
             try {
                 val response = ApiAdapter.apiClient.sendOfflineMessage(
                     "0",
@@ -307,13 +329,17 @@ internal class FormActivity : AppCompatActivity() {
                     chatSettingData?.proprofs_language_id,
                     siteId,
                     "0",
-                    formSubmitValue.email,
+
                     formSubmitValue.name,
+                    formSubmitValue.email,
+                    formSubmitValue.dynamicStringParams,
+                    formSubmitValue.dynamicArrayParams,
                     adapter.chatFormField!!.size.toString(),
                     "",
                     "",
                     "0",
-                    "chat_sdk"
+                    "chat_sdk",
+
                 )
                 alertDialog.dismiss()
                 alertAfterOfflineSubmit()
@@ -340,7 +366,7 @@ internal class FormActivity : AppCompatActivity() {
 
     private fun alertAfterOfflineSubmit() {
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("Thank you for your message. We will respond shortly.")
+        builder.setMessage(chatSettingData?.chat_header_text?.aftermail)
         builder.setNegativeButton("Ok ") { dialog, which ->
             finish()
         }

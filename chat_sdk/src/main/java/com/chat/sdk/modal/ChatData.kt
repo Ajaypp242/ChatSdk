@@ -5,11 +5,11 @@ import com.chat.sdk.util.CommonUtil
 internal data class Message(
     val id_ip: String,
     val message: String,
-    val msg_status: String,
+    var msg_status: String,
     val msgtm: String,
     val pushurl: String,
     val rand_no: String,
-    val sno: String,
+    var sno: String,
     val v_o: String
 )
 
@@ -23,6 +23,7 @@ internal data class ChatData(
     val chat_status: String,
     val messages: ArrayList<Message>,
     val operator_status: List<Operator>,
+    val messages_status: Any,
     val operator_details:Any
 ) {
     companion object GetChatRequestParam {

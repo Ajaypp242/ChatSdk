@@ -21,8 +21,8 @@
         android:textColor="@color/white"
         android:textFontWeight="400"
         android:textSize="@dimen/form_title_size"
+        android:layout_marginLeft="20dp"
         app:layout_constraintLeft_toRightOf="@id/logo"
-        app:layout_constraintRight_toLeftOf="@id/icon_layout"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />

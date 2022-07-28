@@ -6,9 +6,12 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
@@ -22,6 +25,7 @@ import com.chat.sdk.ProProfsChat
 import com.chat.sdk.R
 import com.chat.sdk.activity.form.FormActivity
 import com.chat.sdk.databinding.ActivityChatBinding
+import com.chat.sdk.modal.*
 import com.chat.sdk.modal.ChatData
 import com.chat.sdk.modal.ChatSettingData
 import com.chat.sdk.modal.FormType
@@ -33,12 +37,16 @@ import com.chat.sdk.util.CommonUtil
 import com.chat.sdk.util.FileUtils
 import com.chat.sdk.util.FormUtil
 import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 internal class ChatActivity : AppCompatActivity() {
     private var chatSettingData: ChatSettingData? = null
+
     //private var visitorName: String? = null
     //private var visitorEmail: String? = null
     private var siteId: String = ""
@@ -71,6 +79,11 @@ internal class ChatActivity : AppCompatActivity() {
         val factory = ChatViewModelFactory()
         viewModel = ViewModelProvider(this, factory).get(ChatViewModal::class.java)
         viewModel.chatData.observe(this) {
+            if (it.messages_status is List<*>) {
+                val messageStatusJsonArray: JsonArray =
+                    Gson().toJsonTree(it.messages_status).asJsonArray
+                updateVisitorMessageStatus(messageStatusJsonArray)
+            }
             chatSettingData!!.operator_status = it.operator_status
             if (it.chat_status == ChatStatusType.CLOSED.type) {
                 goToPreviousActivity(0)
@@ -80,6 +93,7 @@ internal class ChatActivity : AppCompatActivity() {
                         dialog.dismiss()
                     }
                     if (ChatData.ProProfs_Msg_Counter == "0") {
+                        Log.d("messages", it.messages.toString())
                         adapter.setChatList(it.messages)
                     } else {
                         adapter.addChatList(it.messages)
@@ -111,6 +125,24 @@ internal class ChatActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateVisitorMessageStatus(messageStatusList: JsonArray) {
+        val unseenMessages =
+            adapter.messages?.filter { it -> (it.msg_status == "0" && it.v_o == "v") }
+        if (unseenMessages != null && unseenMessages.isNotEmpty()) {
+            Log.d("MessageStatusList", messageStatusList.toString())
+            for (message in unseenMessages) {
+                val seenMessage = messageStatusList.find {
+                    it.asJsonObject.get("sno").asString.equals(message.sno) && it.asJsonObject.get("msg_status").asString.equals(
+                        "2"
+                    )
+                }
+                if (seenMessage != null) {
+                    adapter.updateVisitorMessageStatus(seenMessage.asJsonObject.get("sno").asString)
+                }
+            }
+        }
+    }
+
     private fun getIntentData() {
         chatSettingData = intent.getSerializableExtra("chatSettingData") as ChatSettingData
         //visitorName = intent.getStringExtra("name")
@@ -132,23 +164,25 @@ internal class ChatActivity : AppCompatActivity() {
         activityChatBinding.chatRecyclerView.layoutManager = layoutManager
         adapter = ChatAdapter(chatSettingData!!.chat_style, applicationContext)
         activityChatBinding.chatRecyclerView.adapter = adapter
+        updateOperatorInfo(ProProfsChat.operatorName,ProProfsChat.operatorPhoto)
         if (ProProfsChat.messages != null) {
             adapter.setChatList(ProProfsChat.messages!!)
             activityChatBinding.chatRecyclerView.scrollToPosition(adapter.itemCount - 1)
-            updateOperatorInfo(ProProfsChat.operatorName, ProProfsChat.operatorPhoto)
         }
         dialog = CommonUtil().customLoadingDialogAlert(
             this,
             layoutInflater,
-            "Please Wait...",
+            "",
             chatSettingData!!.chat_style.chead_color
         )
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         if (adapter.itemCount == 0) {
             dialog.show()
         }
     }
 
     private fun setFooter() {
+        activityChatBinding.messageBox.hint = chatSettingData?.static_language?.placeholder_text
         val button = activityChatBinding.sendBtn
         val unwrappedDrawable =
             AppCompatResources.getDrawable(applicationContext, R.drawable.send_btn_background)
@@ -163,6 +197,19 @@ internal class ChatActivity : AppCompatActivity() {
         button.setOnClickListener {
             sendMessage(activityChatBinding.messageBox.text.toString())
             activityChatBinding.messageBox.setText("")
+        }
+        activityChatBinding.messageBox.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                sendMessage(activityChatBinding.messageBox.text.toString())
+                activityChatBinding.messageBox.setText("")
+                return@OnKeyListener true
+            }
+            false
+        })
+        if (chatSettingData?.chat_style_extra?.filetransfer == "Y") {
+            activityChatBinding.attachment.visibility = VISIBLE
+        } else {
+            activityChatBinding.attachment.visibility = GONE
         }
         onFileChooseResult()
     }
@@ -240,12 +287,9 @@ internal class ChatActivity : AppCompatActivity() {
                     if (it.data != null) {
                         val uri = it.data?.data
                         val base64 = FileUtils().uriToBase64(uri!!, applicationContext)
-                        val fileExtension = FileUtils().getFileExtension(uri,applicationContext)
-                        Log.d("fileExtension",fileExtension.toString())
-//                        val bitmap  = FileUtils().base64ToBitmap("")
-//                        activityChatBinding.operatorImage.setImageBitmap(bitmap)
+                        val fileExtension = FileUtils().getFileExtension(uri, applicationContext)
                         if (base64 != null && fileExtension != null) {
-                            uploadImage(base64,fileExtension)
+                            uploadImage(base64, fileExtension)
                         }
                     }
                 }
@@ -268,7 +312,8 @@ internal class ChatActivity : AppCompatActivity() {
         closeBtn.setOnClickListener {
             closeChatAlert()
         }
-
+        val toolbarTitle = findViewById<TextView>(R.id.header_title)
+        toolbarTitle.text = chatSettingData?.chat_header_text?.chat_online_text
         val minimize = findViewById<ImageView>(R.id.minimize_icon)
         minimize.setOnClickListener {
             ProProfsChat.messages = adapter.messages
@@ -277,19 +322,22 @@ internal class ChatActivity : AppCompatActivity() {
         }
     }
 
+
     private fun sendMessage(message: String) {
         if (message.trim() != "") {
             val visitorMessage =
-                Message("", message, "", CommonUtil().getCurrentTime(), "", "", "null", "v")
-            Log.d("visitorMessage",visitorMessage.toString())
+                Message("", message, "0", CommonUtil().getCurrentTime(), "", "", "null", "v")
+            Log.d("visitorMessage", visitorMessage.toString())
             val messageList = ArrayList<Message>()
             messageList.add(visitorMessage)
             viewModel.addMessage(messageList)
             CoroutineScope(Dispatchers.Main).launch {
                 try {
-                    ApiAdapter.apiClient.sendVisitorMessage(
+                    val response = ApiAdapter.apiClient.sendVisitorMessage(
                         chatSettingData?.proprofs_session, message
-                    )
+                    ).body()
+                    Log.d("MessageResponse", response?.id.toString())
+                    response?.id?.let { adapter.updateVisitorLastMessageId(it) }
                 } catch (e: Exception) {
                 }
             }
@@ -298,10 +346,10 @@ internal class ChatActivity : AppCompatActivity() {
 
     private fun closeChatAlert() {
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("Are you sure you want to close this session?")
-        builder.setPositiveButton("Continue") { dialog, which ->
+        builder.setMessage(chatSettingData?.static_language?.closing_text)
+        builder.setPositiveButton(chatSettingData?.static_language?.continue_text) { dialog, which ->
         }
-        builder.setNegativeButton("End Chat ") { dialog, which ->
+        builder.setNegativeButton(chatSettingData?.static_language?.end_chat_text) { dialog, which ->
             closeChat()
         }
         builder.show()
@@ -344,16 +392,26 @@ internal class ChatActivity : AppCompatActivity() {
     }
 
     private fun updateOperatorInfo(name: String, photo: String) {
-        if (activityChatBinding.operatorName.text != name) {
-            ProProfsChat.operatorName = name
-            ProProfsChat.operatorPhoto = photo
-            activityChatBinding.operatorName.text = name
+        ProProfsChat.operatorName = name
+        ProProfsChat.operatorPhoto = photo
+        activityChatBinding.operatorName.text = name
+        if (!isImageSVG(photo)) {
             Glide
                 .with(applicationContext)
                 .load("${BaseUrl.OperatorImageBaseUrl}${photo}")
                 .centerCrop()
                 .into(activityChatBinding.operatorImage)
+        } else {
+            activityChatBinding.operatorImage.setImageResource(R.drawable.operator_default_image)
         }
+    }
+
+    private fun isImageSVG(url: String): Boolean {
+        val arr = url.split(".")
+        if (arr[arr.size - 1] == "svg") {
+            return true
+        }
+        return false
     }
 
     private fun rateToOperator() {
@@ -380,26 +438,36 @@ internal class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadImage(file: String,fileExtension:String) {
+    private fun uploadImage(file: String, fileExtension: String) {
         CoroutineScope(Dispatchers.Main).launch {
             try {
-               dialog.show()
+                dialog.show()
                 val response = ApiAdapter.apiClient.uploadImage(
                     "5",
                     chatSettingData!!.proprofs_session,
                     siteId,
                     "sdk",
-                   "data:image/$fileExtension;base64,$file"
+                    "data:image/$fileExtension;base64,$file"
                 ).body()
-                if(response?.error == "0"){
+                Log.d("visitorMessage", response.toString())
+                if (response?.error == "0") {
                     val visitorMessage =
-                        Message("", response.file_name, "", CommonUtil().getCurrentTime(), "", "i", "null", "v")
-                    Log.d("visitorMessage",visitorMessage.toString())
+                        Message(
+                            "",
+                            response.file_name,
+                            "0",
+                            CommonUtil().getCurrentTime(),
+                            "",
+                            "i",
+                            response.id,
+                            "v"
+                        )
+                    Log.d("visitorMessage", visitorMessage.toString())
                     val messageList = ArrayList<Message>()
                     messageList.add(visitorMessage)
                     viewModel.addMessage(messageList)
                 }
-               dialog.dismiss()
+                dialog.dismiss()
             } catch (e: Exception) {
                 dialog.dismiss()
             }

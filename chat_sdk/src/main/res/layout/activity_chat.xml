@@ -33,6 +33,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/operator_name"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textSize="@dimen/font_20"
                 />
             <LinearLayout
@@ -117,7 +119,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@color/white"
-            android:hint="@string/type"
             android:inputType="text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -139,6 +140,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/attachment"
                 android:padding="10dp"
+                android:visibility="gone"
                 android:background="@drawable/send_btn_background"
                 android:layout_marginRight="10dp"
                 tools:ignore="ContentDescription" />
