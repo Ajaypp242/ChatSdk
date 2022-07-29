@@ -137,8 +137,8 @@ internal class CircularBubble() {
         val imageView = CircularImageView(context)
         imageView.id = R.id.bubble_icon
         val layoutParams = LinearLayout.LayoutParams(
-            ScreenUtil().getScreenWidth(context) - 20,
-            ScreenUtil().getScreenWidth(context) - 20
+            ScreenUtil().getScreenWidth(context) - 10,
+            ScreenUtil().getScreenWidth(context) - 10
         )
         imageView.layoutParams = layoutParams
         imageView.borderWidth = 0F
@@ -167,8 +167,8 @@ internal class CircularBubble() {
         val imageView = ImageView(context)
         imageView.id = R.id.bubble_icon
         val layoutParams = LinearLayout.LayoutParams(
-            ScreenUtil().getScreenWidth(context) - 50,
-            ScreenUtil().getScreenWidth(context) - 50
+            ScreenUtil().getCircularIconWidth(context),
+            ScreenUtil().getCircularIconWidth(context)
         )
         imageView.layoutParams = layoutParams
         when (type) {

@@ -14,4 +14,14 @@ internal class ScreenUtil {
         val displayMetrics = context.resources.displayMetrics
        return (2 * displayMetrics.widthPixels)/3
     }
+
+    fun getCircularBubbleWidth(context: Context): Int {
+        val displayMetrics = context.resources.displayMetrics
+        return displayMetrics.widthPixels/6
+    }
+
+    fun getCircularIconWidth(context: Context): Int {
+        val displayMetrics = context.resources.displayMetrics
+        return displayMetrics.widthPixels/10
+    }
 }

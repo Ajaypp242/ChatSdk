@@ -9,6 +9,7 @@
         <entry key="../../ChatSdk/Demo/app/src/main/res/layout/fragment_bubble.xml" value="0.24270833333333333" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable-v21/circular_bubble_bg.xml" value="0.105" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/bar_bubble_bg.xml" value="0.1245" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/bubble_shadow.xml" value="0.1325" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/circular_bubble_bg.xml" value="0.1" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/edit_text_border.xml" value="0.1665" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/drawable/ic_close.xml" value="0.105" />

@@ -6,4 +6,6 @@
     <dimen name="font_20">20sp</dimen>
     <dimen name="message_text_size">16sp</dimen>
     <dimen name="form_error_msg_size">12sp</dimen>
+    <dimen name="radius_corner">300dp</dimen>
+
 </resources>
