@@ -1,8 +1,6 @@
 package com.chat.sdk.util
 
-import android.app.Activity
 import android.content.Context
-import android.util.DisplayMetrics
 
 internal class ScreenUtil {
     fun getScreenWidth(context: Context): Int {

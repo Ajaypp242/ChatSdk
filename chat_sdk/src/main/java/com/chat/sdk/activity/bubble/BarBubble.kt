@@ -1,31 +1,25 @@
 package com.chat.sdk.activity.bubble
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.drawable.DrawableCompat
 import com.chat.sdk.R
 import com.chat.sdk.modal.ChatStyle
 import com.chat.sdk.util.ScreenUtil
-import com.chat.sdk.util.ViewUtil
 
 internal class BarBubble() {
     fun configureBarBubble(view: View, chatStyle: ChatStyle, bubbleText:String) {
         val bubbleView = view.findViewById<ConstraintLayout>(R.id.bubble_layout)
         val layoutParams = bubbleView.layoutParams
         layoutParams.width = ScreenUtil().getBarBubbleWidth(view.context)
-//        bubbleView.setBackgroundResource(R.drawable.bubble_shadow)
         val barBubble = LayoutInflater.from(view.context).inflate(R.layout.bubble_bar, null)
         val barBubbleLayout = barBubble.findViewById<LinearLayout>(R.id.bar_bubble_layout)
         val bubbleTextView = barBubbleLayout.findViewById<TextView>(R.id.bubble_text)
@@ -70,7 +64,6 @@ internal class BarBubble() {
            ConstraintSet.PARENT_ID,
             ConstraintSet.RIGHT
         )
-//        constraintSet.setMargin(R.id.status, ConstraintSet.TOP, -10)
         constraintSet.setMargin(R.id.status, ConstraintSet.RIGHT, 30)
         constraintSet.applyTo(barView)
     }
@@ -103,7 +96,6 @@ internal class BarBubble() {
             ConstraintSet.LEFT
         )
         constraintSet.setMargin(R.id.bar_bubble_layout, ConstraintSet.TOP, 10)
-//        constraintSet.setMargin(R.id.status, ConstraintSet.RIGHT, 30)
         constraintSet.applyTo(barView)
     }
 }
