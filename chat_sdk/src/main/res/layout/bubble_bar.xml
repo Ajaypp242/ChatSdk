@@ -3,29 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/error_msg"
     android:orientation="horizontal"
     android:paddingLeft="20dp"
-    android:weightSum="10"
-    android:paddingStart="20dp">
+    android:paddingStart="20dp"
+    android:id="@+id/bar_bubble_layout"
+    >
 
     <ImageView
         android:id="@+id/bubble_icon"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:src="@drawable/third"
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
-        android:layout_weight="9"
         android:gravity="center"
-        android:text="Chat with us"
+        android:id="@+id/bubble_text"
         android:textAlignment="textStart"
-
         android:textColor="@color/white"
         android:textSize="20sp" />
 </LinearLayout>

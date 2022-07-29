@@ -21,7 +21,7 @@ import com.mikhaellopez.circularimageview.CircularImageView
 
 internal class CircularBubble() {
 
-    fun configureBubble(view: View, chatStyle: ChatStyle) {
+    fun configureCircularBubble(view: View, chatStyle: ChatStyle) {
         val circularView = createCircularLayout(view, chatStyle)
         with(circularView) {
             when (chatStyle.embedded_window) {
@@ -78,7 +78,7 @@ internal class CircularBubble() {
     private fun onlineIcon(context: Context): LinearLayout {
         val icon = LinearLayout(context)
         icon.id = R.id.status
-        val width = ScreenUtil().getScreenWidth(context)/5
+        val width = ScreenUtil().getScreenWidth(context) / 5
         icon.layoutParams = LinearLayout.LayoutParams(width, width)
         icon.setBackgroundResource(R.drawable.offline_icon)
         return icon
@@ -137,8 +137,8 @@ internal class CircularBubble() {
         val imageView = CircularImageView(context)
         imageView.id = R.id.bubble_icon
         val layoutParams = LinearLayout.LayoutParams(
-            ScreenUtil().getScreenWidth(context)-20,
-            ScreenUtil().getScreenWidth(context)-20
+            ScreenUtil().getScreenWidth(context) - 20,
+            ScreenUtil().getScreenWidth(context) - 20
         )
         imageView.layoutParams = layoutParams
         imageView.borderWidth = 0F
@@ -166,7 +166,10 @@ internal class CircularBubble() {
     private fun createIcon(context: Context, type: String): ImageView {
         val imageView = ImageView(context)
         imageView.id = R.id.bubble_icon
-        val layoutParams = LinearLayout.LayoutParams(ScreenUtil().getScreenWidth(context)-50 , ScreenUtil().getScreenWidth(context)-50)
+        val layoutParams = LinearLayout.LayoutParams(
+            ScreenUtil().getScreenWidth(context) - 50,
+            ScreenUtil().getScreenWidth(context) - 50
+        )
         imageView.layoutParams = layoutParams
         when (type) {
             CircularBubbleType.ICON_7.type -> {
@@ -178,8 +181,11 @@ internal class CircularBubble() {
             CircularBubbleType.ICON_12.type -> {
                 imageView.setImageResource(R.drawable.twelve)
             }
-            else -> {
+            CircularBubbleType.ICON_3.type -> {
                 imageView.setImageResource(R.drawable.third)
+            }
+            else -> {
+
             }
         }
         return imageView

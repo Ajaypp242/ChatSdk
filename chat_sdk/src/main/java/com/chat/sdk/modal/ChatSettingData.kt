@@ -13,5 +13,6 @@ internal data class ChatSettingData(
     val ProProfs_accounts: String,
     var operator_status: List<Operator>,
     val chat_status:ChatStatus,
-    val static_language:StaticLanguage
+    val static_language:StaticLanguage,
+    val _ProProfs_SDK_Status:String
 ) : Serializable

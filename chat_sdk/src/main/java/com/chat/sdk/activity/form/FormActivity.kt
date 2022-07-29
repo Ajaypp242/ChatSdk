@@ -87,8 +87,6 @@ internal class FormActivity : AppCompatActivity() {
                 adapter.chatFormField!!,
                 activityFormBinding.formRecyclerView
             )
-            Log.d("Form Valid",res.toString())
-//            return@setOnClickListener
             if (res.valid) {
                 if (currentFormType == FormType.PRE_CHAT) {
                     preSubmitAction()
@@ -205,11 +203,8 @@ internal class FormActivity : AppCompatActivity() {
         val text = FormUtil().getCatTextField(chatSettingData.chat_form_text, type)
         activityFormBinding.formTextMessage.text = text.beforesubmit
         activityFormBinding.submit.text = text.txt_submit
-//        adapter.clear()
-//        adapter = FormAdapter()
         val layoutManager = LinearLayoutManager(applicationContext)
         activityFormBinding.formRecyclerView.layoutManager = layoutManager
-//        activityFormBinding.formRecyclerView.adapter = adapter
         val data = FormUtil().getCatTypeFields(chatSettingData.chat_form_field, type)
         val sortedData = FormUtil().sortFieldData(data)
         adapter.setFormFields(sortedData, this)
@@ -345,8 +340,7 @@ internal class FormActivity : AppCompatActivity() {
                     "",
                     "",
                     "0",
-                    "chat_sdk",
-
+                    "chat_sdk"
                 )
                 alertDialog.dismiss()
                 alertAfterOfflineSubmit()

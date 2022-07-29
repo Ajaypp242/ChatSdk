@@ -64,18 +64,17 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
                 "", "", ""
             )
             chatSettingData = response.body()
-            chatStatus = chatSettingData!!.chat_status.status
-            Session(sharedPreferences).setKey(
-                Constant.SESSION_KEY,
-                chatSettingData!!.proprofs_session
-            )
-            account_id = chatSettingData!!.ProProfs_accounts
-//            Session(sharedPreferences).setKey(
-//                Constant.ACCOUNT_ID,
-//                chatSettingData!!.ProProfs_accounts
-//            )
-            CircularBubble().configureBubble(bubble, chatSettingData!!.chat_style)
-            getChatData()
+            if(chatSettingData?._ProProfs_SDK_Status ==  null){
+                chatStatus = chatSettingData!!.chat_status.status
+                Session(sharedPreferences).setKey(
+                    Constant.SESSION_KEY,
+                    chatSettingData!!.proprofs_session
+                )
+                account_id = chatSettingData!!.ProProfs_accounts
+                Bubble.configureBubble(bubble, chatSettingData!!.chat_style,chatSettingData?.chat_header_text!!.chat_online_text)
+                getChatData()
+            }
+
         } catch (e: Exception) {
         }
     }
