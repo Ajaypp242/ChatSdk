@@ -31,7 +31,7 @@ internal data class ChatData(
         var proprofs_language_id: String? = null
         var ProProfs_Session: String? = null
         var ProProfs_Msg_Counter: String = "0"
-        var ProProfs_Visitor_TimeZone: String = CommonUtil().getTimeZone()
+        var ProProfs_Visitor_TimeZone: Int = CommonUtil().getTimeZone()
         var ProProfs_invitation_type: String = "1"
         var ProProfs_Current_URL: String = "chat_sdk"
         var ProProfsGroupIdHardCoded: String = "0"

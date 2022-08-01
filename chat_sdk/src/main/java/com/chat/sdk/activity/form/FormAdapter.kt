@@ -1,6 +1,5 @@
 package com.chat.sdk.activity.form
 
-import android.R.attr.data
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View

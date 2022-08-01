@@ -77,12 +77,13 @@ internal class CommonUtil {
         return builder.create()
     }
 
-    fun getTimeZone():String{
+    fun getTimeZone(): Int {
         val timezone = Date().timezoneOffset
+        Log.d("timezone", (-(timezone)).toString())
         if(timezone != 0){
-            return timezone.toString().trim('-')
+            return -(timezone)
         }
-        return "0"
+        return 0
     }
 
     @SuppressLint("SimpleDateFormat")

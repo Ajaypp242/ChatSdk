@@ -11,7 +11,6 @@ import com.chat.sdk.activity.form.FormActivity
 import com.chat.sdk.modal.*
 import com.chat.sdk.network.ApiAdapter
 import com.chat.sdk.network.GetChatData
-import com.chat.sdk.util.CommonUtil
 import com.chat.sdk.util.Constant
 import com.chat.sdk.util.Session
 import kotlinx.coroutines.*
@@ -41,11 +40,9 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
 
 
     override fun init(): View {
-//        CommonUtil().timeInCurrentTimeZone("02:51 AM")
         sharedPreferences =
             context.getSharedPreferences(Constant.PREFERENCE_NAME, Context.MODE_PRIVATE)
         val sessionId = Session(sharedPreferences).getKey(Constant.SESSION_KEY)
-//        account_id = Session(sharedPreferences).getKey(Constant.ACCOUNT_ID)!!
         bubble = Bubble(context)
         CoroutineScope(Dispatchers.Main).launch {
             getData(sessionId, sharedPreferences)
@@ -64,17 +61,20 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
                 "", "", ""
             )
             chatSettingData = response.body()
-            if(chatSettingData?._ProProfs_SDK_Status ==  null){
+            if (chatSettingData?._ProProfs_SDK_Status == null) {
                 chatStatus = chatSettingData!!.chat_status.status
                 Session(sharedPreferences).setKey(
                     Constant.SESSION_KEY,
                     chatSettingData!!.proprofs_session
                 )
                 account_id = chatSettingData!!.ProProfs_accounts
-                Bubble.configureBubble(bubble, chatSettingData!!.chat_style,chatSettingData?.chat_header_text!!.chat_online_text)
+                Bubble.configureBubble(
+                    bubble,
+                    chatSettingData!!.chat_style,
+                    chatSettingData?.chat_header_text!!.chat_online_text
+                )
                 getChatData()
             }
-
         } catch (e: Exception) {
         }
     }
@@ -93,7 +93,6 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
                     updateOperatorStatus(value.operator_status)
                 }
             }
-
             bubble.setOnClickListener {
                 navigationOnChatStatus()
             }
@@ -101,7 +100,8 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
     }
 
     private fun updateOperatorStatus(operators: List<Operator>) {
-        val newStatus = if (operators.isEmpty()) OperatorStatusType.OFFLINE else OperatorStatusType.ONLINE
+        val newStatus =
+            if (operators.isEmpty()) OperatorStatusType.OFFLINE else OperatorStatusType.ONLINE
         if (operatorStatus != newStatus) {
             operatorStatus = newStatus
             OperatorStatus.changeStatus(bubble, operatorStatus)
@@ -139,7 +139,8 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
     }
 
     private fun launchFormActivity() {
-        val formType: FormType = if (chatSettingData!!.operator_status.isEmpty()) FormType.OFFLINE else FormType.PRE_CHAT
+        val formType: FormType =
+            if (chatSettingData!!.operator_status.isEmpty()) FormType.OFFLINE else FormType.PRE_CHAT
         val starter = Intent(context, FormActivity::class.java)
         starter.putExtra("chatSettingData", chatSettingData)
         starter.putExtra("site_id", site_id)

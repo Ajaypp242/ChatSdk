@@ -49,7 +49,6 @@ import org.json.JSONObject
 
 internal class ChatActivity : AppCompatActivity() {
     private var chatSettingData: ChatSettingData? = null
-
     //private var visitorName: String? = null
     //private var visitorEmail: String? = null
     private var siteId: String = ""
@@ -329,7 +328,6 @@ internal class ChatActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
         }
     }
-
 
     private fun sendMessage(message: String) {
         if (message.trim() != "") {

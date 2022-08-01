@@ -1,9 +1,6 @@
 package com.chat.sdk.activity.bubble
 
 import android.content.Context
-import android.graphics.Color
-import android.os.Build
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -11,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.chat.sdk.R
 import com.chat.sdk.modal.ChatStyle
 import com.chat.sdk.util.ScreenUtil
-import com.chat.sdk.util.ViewUtil
 
 internal class Bubble(context: Context) : FrameLayout(context) {
     companion object {

@@ -51,7 +51,7 @@ internal interface ApiClient {
         @Field("proprofs_language_id") proprofs_language_id: String?,
         @Field("ProProfs_Session") ProProfs_Session: String?,
         @Field("ProProfs_Msg_Counter") ProProfs_Msg_Counter: String,
-        @Field("ProProfs_Visitor_TimeZone") ProProfs_Visitor_TimeZone: String,
+        @Field("ProProfs_Visitor_TimeZone") ProProfs_Visitor_TimeZone: Int,
         @Field("ProProfs_invitation_type") ProProfs_invitation_type: String,
         @Field("ProProfs_Current_URL") ProProfs_Current_URL: String,
         @Field("ProProfsGroupIdHardCoded") ProProfsGroupIdHardCoded: String,
