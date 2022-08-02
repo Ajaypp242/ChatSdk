@@ -3,7 +3,6 @@ package com.chat.sdk.activity.chat
 import android.content.Context
 import android.graphics.Color
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -101,7 +100,6 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
             }
             val item = messages?.get(position)
             if(item?.rand_no == "i"){
-                Log.d("VISITORIMAGEURL","${BaseUrl.messageImageUrl}${ProProfsChat.account_id}/${item.message}")
                 image.visibility = ImageView.VISIBLE
                 message.visibility = TextView.GONE
                     Glide.with(context)

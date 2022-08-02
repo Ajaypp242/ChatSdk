@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
@@ -258,8 +257,6 @@ internal class FormActivity : AppCompatActivity() {
                     adapter.chatFormField!!.size.toString(),
                     ""
                 )
-                Log.d("Form submit ","Form submit")
-
             } catch (e: Exception) {
             }
             finally {
@@ -323,7 +320,6 @@ internal class FormActivity : AppCompatActivity() {
         messageView.gravity = Gravity.CENTER
         CoroutineScope(Dispatchers.Main).launch {
             val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!,"off_pp_fld_")
-            Log.d("Offline Params",formSubmitValue.toString())
             try {
                 val response = ApiAdapter.apiClient.sendOfflineMessage(
                     "0",

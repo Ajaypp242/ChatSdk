@@ -39,6 +39,5 @@ internal data class ChatData(
         var ProProfs_Visitor_email: String = ""
         var ProProfs_typing_message: String = ""
     }
-
 }
 

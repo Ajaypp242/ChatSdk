@@ -1,11 +1,7 @@
 package com.chat.sdk.util
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
-import com.chat.sdk.util.Constant
-import kotlinx.coroutines.awaitAll
 
 internal class Session(private val sharedPreferences: SharedPreferences) {
 

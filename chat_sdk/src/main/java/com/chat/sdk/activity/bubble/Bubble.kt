@@ -1,7 +1,6 @@
 package com.chat.sdk.activity.bubble
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -34,6 +33,4 @@ internal class Bubble(context: Context) : FrameLayout(context) {
         bubble.id = R.id.bubble_layout
         return bubble
     }
-
-
 }

@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.GONE
@@ -28,7 +27,6 @@ import com.chat.sdk.ProProfsChat
 import com.chat.sdk.R
 import com.chat.sdk.activity.form.FormActivity
 import com.chat.sdk.databinding.ActivityChatBinding
-import com.chat.sdk.modal.*
 import com.chat.sdk.modal.ChatData
 import com.chat.sdk.modal.ChatSettingData
 import com.chat.sdk.modal.FormType
@@ -41,11 +39,9 @@ import com.chat.sdk.util.FileUtils
 import com.chat.sdk.util.FormUtil
 import com.google.gson.Gson
 import com.google.gson.JsonArray
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 internal class ChatActivity : AppCompatActivity() {
     private var chatSettingData: ChatSettingData? = null
@@ -95,7 +91,6 @@ internal class ChatActivity : AppCompatActivity() {
                         dialog.dismiss()
                     }
                     if (ChatData.ProProfs_Msg_Counter == "0") {
-                        Log.d("messages", it.messages.toString())
                         adapter.setChatList(it.messages)
                     } else {
                         adapter.addChatList(it.messages)
@@ -131,7 +126,6 @@ internal class ChatActivity : AppCompatActivity() {
         val unseenMessages =
             adapter.messages?.filter { it -> (it.msg_status == "0" && it.v_o == "v") }
         if (unseenMessages != null && unseenMessages.isNotEmpty()) {
-            Log.d("MessageStatusList", messageStatusList.toString())
             for (message in unseenMessages) {
                 val seenMessage = messageStatusList.find {
                     it.asJsonObject.get("sno").asString.equals(message.sno) && it.asJsonObject.get("msg_status").asString.equals(
@@ -333,7 +327,6 @@ internal class ChatActivity : AppCompatActivity() {
         if (message.trim() != "") {
             val visitorMessage =
                 Message("", message, "0", CommonUtil().getCurrentTime(), "", "", "null", "v")
-            Log.d("visitorMessage", visitorMessage.toString())
             val messageList = ArrayList<Message>()
             messageList.add(visitorMessage)
             viewModel.addMessage(messageList)
@@ -342,7 +335,6 @@ internal class ChatActivity : AppCompatActivity() {
                     val response = ApiAdapter.apiClient.sendVisitorMessage(
                         chatSettingData?.proprofs_session, message
                     ).body()
-                    Log.d("MessageResponse", response?.id.toString())
                     response?.id?.let { adapter.updateVisitorLastMessageId(it) }
                 } catch (e: Exception) {
                 }
@@ -455,7 +447,6 @@ internal class ChatActivity : AppCompatActivity() {
                     "sdk",
                     "data:image/$fileExtension;base64,$file"
                 ).body()
-                Log.d("visitorMessage", response.toString())
                 if (response?.error == "0") {
                     val visitorMessage =
                         Message(
@@ -468,7 +459,6 @@ internal class ChatActivity : AppCompatActivity() {
                             response.id,
                             "v"
                         )
-                    Log.d("visitorMessage", visitorMessage.toString())
                     val messageList = ArrayList<Message>()
                     messageList.add(visitorMessage)
                     viewModel.addMessage(messageList)

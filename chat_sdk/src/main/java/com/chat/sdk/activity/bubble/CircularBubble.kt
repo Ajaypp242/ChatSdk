@@ -20,7 +20,6 @@ import com.chat.sdk.util.ScreenUtil
 import com.mikhaellopez.circularimageview.CircularImageView
 
 internal class CircularBubble() {
-
     fun configureCircularBubble(view: View, chatStyle: ChatStyle) {
         val circularView = createCircularLayout(view, chatStyle)
         with(circularView) {
@@ -28,6 +27,7 @@ internal class CircularBubble() {
                 CircularBubbleType.FEMALE.type -> {
                     val imageView = createImageView(view.context)
                     imageView.setImageResource(R.drawable.female)
+//                    imageView.scaleType = ImageView.ScaleType.FIT_XY
                     this!!.addView(imageView)
                 }
                 CircularBubbleType.MALE.type -> {
@@ -44,7 +44,7 @@ internal class CircularBubble() {
                     this!!.addView(textView)
                 }
                 CircularBubbleType.CUSTOMURL.type -> {
-                    val imageView = createImageView(view.context)
+                    val imageView = createCircularImageView(view.context)
                     Glide
                         .with(view.context)
                         .load("${BaseUrl.ImageUrl}${chatStyle.custom_chat_bubble}")
@@ -134,15 +134,26 @@ internal class CircularBubble() {
         constraintSet.applyTo(circularView)
     }
 
-    private fun createImageView(context: Context): CircularImageView {
+    private fun createImageView(context: Context): ImageView {
+        val imageView = ImageView(context)
+        imageView.id = R.id.bubble_icon
+        val layoutParams = LinearLayout.LayoutParams(
+            ScreenUtil().getImageViewBubbleWidth(context),
+            ScreenUtil().getImageViewBubbleWidth(context)
+        )
+        imageView.layoutParams = layoutParams
+        return imageView
+    }
+
+    private fun createCircularImageView(context: Context): CircularImageView {
         val imageView = CircularImageView(context)
         imageView.id = R.id.bubble_icon
         val layoutParams = LinearLayout.LayoutParams(
-            ScreenUtil().getScreenWidth(context) - 10,
-            ScreenUtil().getScreenWidth(context) - 10
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
         imageView.layoutParams = layoutParams
-        imageView.borderWidth = 0F
+//        imageView.borderWidth = 0F
         return imageView
     }
 
@@ -184,9 +195,6 @@ internal class CircularBubble() {
             }
             CircularBubbleType.ICON_3.type -> {
                 imageView.setImageResource(R.drawable.third)
-            }
-            else -> {
-
             }
         }
         return imageView

@@ -2,8 +2,6 @@ package com.chat.sdk.util
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
@@ -11,11 +9,8 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.chat.sdk.R
-import com.chat.sdk.activity.form.FormActivity
 import com.chat.sdk.activity.form.FormFieldType
 import com.chat.sdk.modal.*
-import java.lang.reflect.Array
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -42,7 +37,6 @@ internal class FormUtil {
         val submitData = ArrayList<FormValidationSubmitType>()
         var isValid = true
         for ((index, field) in chatFormFields.withIndex()) {
-            Log.d("Form Filed",field.toString())
             if (field.js == "Y") {
                 if (field.isemail == "Y") {
                     if (field.value.isNullOrEmpty()) {
@@ -75,7 +69,6 @@ internal class FormUtil {
     }
 
     fun getFormValues(chatFormFields: List<ChatFormField>, dynamic_field_tag:String): FormSubmitValue {
-        Log.d("chatFormFields",chatFormFields.toString())
         val dynamicStringParams: HashMap<String, String> = HashMap()
         val dynamicArrayParams: HashMap<String, ArrayList<String>> = HashMap()
         val name = ""
@@ -108,7 +101,6 @@ internal class FormUtil {
                 }
             }
         }
-        Log.d("formParams",formSubmitValue.toString())
         return formSubmitValue
     }
 

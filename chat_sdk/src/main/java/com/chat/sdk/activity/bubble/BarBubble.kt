@@ -16,7 +16,7 @@ import com.chat.sdk.modal.ChatStyle
 import com.chat.sdk.util.ScreenUtil
 
 internal class BarBubble() {
-    fun configureBarBubble(view: View, chatStyle: ChatStyle, bubbleText:String) {
+    fun configureBarBubble(view: View, chatStyle: ChatStyle, bubbleText: String) {
         val bubbleView = view.findViewById<ConstraintLayout>(R.id.bubble_layout)
         val layoutParams = bubbleView.layoutParams
         layoutParams.width = ScreenUtil().getBarBubbleWidth(view.context)
@@ -28,7 +28,8 @@ internal class BarBubble() {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-        val unwrappedDrawable = AppCompatResources.getDrawable(view.context, R.drawable.bar_bubble_bg)
+        val unwrappedDrawable =
+            AppCompatResources.getDrawable(view.context, R.drawable.bar_bubble_bg)
         val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
         if (wrappedDrawable != null) {
             DrawableCompat.setTint(wrappedDrawable, Color.parseColor("#${chatStyle.chead_color}"))
@@ -61,7 +62,7 @@ internal class BarBubble() {
         constraintSet.connect(
             R.id.status,
             ConstraintSet.RIGHT,
-           ConstraintSet.PARENT_ID,
+            ConstraintSet.PARENT_ID,
             ConstraintSet.RIGHT
         )
         constraintSet.setMargin(R.id.status, ConstraintSet.RIGHT, 30)

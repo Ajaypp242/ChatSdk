@@ -21,6 +21,7 @@ internal interface ApiClient {
         @Field("AccountCode") AccountCode: String,
         @Field("ProProfsGroupIdHardCoded") ProProfsGroupIdHardCoded: String,
         @Field("_ProProfs_custom_langauge_for_bot") _ProProfs_custom_langauge_for_bot: String,
+        @Field("var_pp_kb_tracker") var_pp_kb_tracker:String
     ): Response<ChatSettingData>
 
     @FormUrlEncoded

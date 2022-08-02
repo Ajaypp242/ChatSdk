@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -79,7 +78,6 @@ internal class CommonUtil {
 
     fun getTimeZone(): Int {
         val timezone = Date().timezoneOffset
-        Log.d("timezone", (-(timezone)).toString())
         if(timezone != 0){
             return -(timezone)
         }

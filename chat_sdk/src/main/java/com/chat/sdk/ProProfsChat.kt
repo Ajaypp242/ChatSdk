@@ -16,7 +16,6 @@ import com.chat.sdk.util.Session
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
-
 class ProProfsChat(private val context: Context, private val site_id: String) :
     ProProfsChatInterface {
     private lateinit var bubble: View
@@ -38,7 +37,6 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
         }
     }
 
-
     override fun init(): View {
         sharedPreferences =
             context.getSharedPreferences(Constant.PREFERENCE_NAME, Context.MODE_PRIVATE)
@@ -58,7 +56,7 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
             val response = ApiAdapter.apiClient.getData(
                 site_id, "", session_id, "",
                 "", "", "", "", "",
-                "", "", ""
+                "", "", "","0"
             )
             chatSettingData = response.body()
             if (chatSettingData?._ProProfs_SDK_Status == null) {
