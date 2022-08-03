@@ -42,20 +42,10 @@ internal class BarBubble() {
     }
 
     private fun onlineIcon(context: Context): View? {
-        //        val layout = view.findViewById<ConstraintLayout>(R.id.bubble_layout)
         val iconLayout = LayoutInflater.from(context).inflate(R.layout.online_status_layout, null)
-//        val icon = LinearLayout(context)
-//        icon.id = R.id.status
         val width = ScreenUtil().getScreenWidth(context) / 4
         iconLayout.layoutParams = LinearLayout.LayoutParams(width, width)
-//        icon.setBackgroundResource(R.drawable.offline_icon)
         return iconLayout
-//        val icon = LinearLayout(context)
-//        icon.id = R.id.status
-//        val width = ScreenUtil().getScreenWidth(context) / 4
-//        icon.layoutParams = LinearLayout.LayoutParams(width, width)
-//        icon.setBackgroundResource(R.drawable.offline_icon)
-//        return icon
     }
 
     private fun setOnlineIconConstraint(barView: ConstraintLayout) {

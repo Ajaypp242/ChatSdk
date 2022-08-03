@@ -2,7 +2,6 @@ package com.chat.sdk.util
 
 import android.content.Context
 import android.content.res.Configuration
-import android.util.Log
 
 internal class ScreenUtil {
     fun getScreenWidth(context: Context): Int {
@@ -35,23 +34,11 @@ internal class ScreenUtil {
         return displayMetrics.widthPixels/7
     }
 
-
-
-
     fun isDarkModeEnable(context: Context): Boolean {
-
         val nightModeFlags: Int =context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
        if(nightModeFlags == Configuration.UI_MODE_NIGHT_YES){
            return true
        }
         return false
-
-        Log.d("nightModeFlags",nightModeFlags.toString())
-//        Log.d("nightModeFlags",Configuration.UI_MODE_NIGHT_MASK.toString())
-
-        Log.d("nightModeFlagsYes",Configuration.UI_MODE_NIGHT_YES.toString())
-        Log.d("nightModeFlagsNo",Configuration.UI_MODE_NIGHT_NO.toString())
-
     }
 }
