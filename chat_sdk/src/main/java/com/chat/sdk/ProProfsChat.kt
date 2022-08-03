@@ -54,7 +54,7 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
     ) {
         try {
             val response = ApiAdapter.apiClient.getData(
-                site_id, "", session_id, "",
+                site_id, "", session_id, "sdk_${site_id}",
                 "", "", "", "", "",
                 "", "", "","0"
             )

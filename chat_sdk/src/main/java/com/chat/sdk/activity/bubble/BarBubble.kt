@@ -41,31 +41,39 @@ internal class BarBubble() {
         setOnlineIconConstraint(bubbleView)
     }
 
-    private fun onlineIcon(context: Context): LinearLayout {
-        val icon = LinearLayout(context)
-        icon.id = R.id.status
+    private fun onlineIcon(context: Context): View? {
+        //        val layout = view.findViewById<ConstraintLayout>(R.id.bubble_layout)
+        val iconLayout = LayoutInflater.from(context).inflate(R.layout.online_status_layout, null)
+//        val icon = LinearLayout(context)
+//        icon.id = R.id.status
         val width = ScreenUtil().getScreenWidth(context) / 4
-        icon.layoutParams = LinearLayout.LayoutParams(width, width)
-        icon.setBackgroundResource(R.drawable.offline_icon)
-        return icon
+        iconLayout.layoutParams = LinearLayout.LayoutParams(width, width)
+//        icon.setBackgroundResource(R.drawable.offline_icon)
+        return iconLayout
+//        val icon = LinearLayout(context)
+//        icon.id = R.id.status
+//        val width = ScreenUtil().getScreenWidth(context) / 4
+//        icon.layoutParams = LinearLayout.LayoutParams(width, width)
+//        icon.setBackgroundResource(R.drawable.offline_icon)
+//        return icon
     }
 
     private fun setOnlineIconConstraint(barView: ConstraintLayout) {
         val constraintSet = ConstraintSet()
         constraintSet.clone(barView)
         constraintSet.connect(
-            R.id.status,
+            R.id.status_layout,
             ConstraintSet.TOP,
             ConstraintSet.PARENT_ID,
             ConstraintSet.TOP
         )
         constraintSet.connect(
-            R.id.status,
+            R.id.status_layout,
             ConstraintSet.RIGHT,
             ConstraintSet.PARENT_ID,
             ConstraintSet.RIGHT
         )
-        constraintSet.setMargin(R.id.status, ConstraintSet.RIGHT, 30)
+        constraintSet.setMargin(R.id.status_layout, ConstraintSet.RIGHT, 30)
         constraintSet.applyTo(barView)
     }
 

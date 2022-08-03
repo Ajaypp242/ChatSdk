@@ -7,7 +7,7 @@ internal enum class CircularBubbleType(val type:String) {
     ICON_12("12"),
     MALE("18"),
     FEMALE("19"),
-    CUSTOMURL("17"),
+    CUSTOM_URL("17"),
     TEXT_CHAT("4"),
     TEXT_HELP("9")
 }

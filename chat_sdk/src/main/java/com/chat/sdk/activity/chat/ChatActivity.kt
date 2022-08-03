@@ -88,6 +88,8 @@ internal class ChatActivity : AppCompatActivity() {
             } else {
                 if (it.messages.isNotEmpty()) {
                     if (dialog.isShowing) {
+                        activityChatBinding.operatorInfo.visibility = VISIBLE
+                        activityChatBinding.border.visibility = VISIBLE
                         dialog.dismiss()
                     }
                     if (ChatData.ProProfs_Msg_Counter == "0") {
@@ -173,6 +175,8 @@ internal class ChatActivity : AppCompatActivity() {
         )
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         if (adapter.itemCount == 0) {
+            activityChatBinding.operatorInfo.visibility = GONE
+            activityChatBinding.border.visibility = GONE
             dialog.show()
         }
     }
@@ -393,6 +397,7 @@ internal class ChatActivity : AppCompatActivity() {
         ProProfsChat.operatorName = name
         ProProfsChat.operatorPhoto = photo
         activityChatBinding.operatorName.text = name
+
         if (!isImageSVG(photo)) {
             Glide
                 .with(applicationContext)

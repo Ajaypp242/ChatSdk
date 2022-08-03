@@ -35,6 +35,7 @@
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/checkb0x_item.xml" value="0.21614583333333334" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/checkbox_item.xml" value="0.15092592592592594" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/circular_bubble.xml" value="0.21614583333333334" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/circular_icon.xml" value="0.2546875" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/custom_loader.xml" value="0.20677083333333332" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/custom_toolbar.xml" value="0.20260416666666667" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/field_type_text.xml" value="0.2421875" />
@@ -47,6 +48,8 @@
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/form_filed_text_type.xml" value="0.2171875" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/form_item.xml" value="0.27395833333333336" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/fragment_bubble.xml" value="0.2890625" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/online_icon.xml" value="0.2546875" />
+        <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/online_status_layout.xml" value="0.2557291666666667" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/operator_chat_view.xml" value="0.27447916666666666" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/pre_post_item.xml" value="0.335" />
         <entry key="../../ChatSdk/Demo/chat_sdk/src/main/res/layout/radio_item.xml" value="0.21614583333333334" />

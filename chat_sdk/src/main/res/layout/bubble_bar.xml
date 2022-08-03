@@ -4,20 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:paddingLeft="20dp"
-    android:paddingStart="20dp"
+    android:paddingLeft="10dp"
+    android:paddingStart="10dp"
+    android:layout_weight="10"
     android:id="@+id/bar_bubble_layout"
     >
 
     <ImageView
         android:id="@+id/bubble_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+            android:layout_weight="2"
+        android:layout_height="wrap_content"
         android:src="@drawable/third"
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="8"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:gravity="center"

@@ -1,10 +1,8 @@
 package com.chat.sdk.activity.bubble
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
-import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -21,86 +19,137 @@ import com.mikhaellopez.circularimageview.CircularImageView
 
 internal class CircularBubble() {
     fun configureCircularBubble(view: View, chatStyle: ChatStyle) {
-        val circularView = createCircularLayout(view, chatStyle)
-        with(circularView) {
-            when (chatStyle.embedded_window) {
-                CircularBubbleType.FEMALE.type -> {
-                    val imageView = createImageView(view.context)
-                    imageView.setImageResource(R.drawable.female)
-//                    imageView.scaleType = ImageView.ScaleType.FIT_XY
-                    this!!.addView(imageView)
-                }
-                CircularBubbleType.MALE.type -> {
-                    val imageView = createImageView(view.context)
-                    imageView.setImageResource(R.drawable.male)
-                    this!!.addView(imageView)
-                }
-                (CircularBubbleType.TEXT_CHAT.type) -> {
-                    val textView = createTextView(view.context, "Chat")
-                    this!!.addView(textView)
-                }
-                (CircularBubbleType.TEXT_HELP.type) -> {
-                    val textView = createTextView(view.context, "Help")
-                    this!!.addView(textView)
-                }
-                CircularBubbleType.CUSTOMURL.type -> {
-                    val imageView = createCircularImageView(view.context)
-                    Glide
-                        .with(view.context)
-                        .load("${BaseUrl.ImageUrl}${chatStyle.custom_chat_bubble}")
-                        .centerCrop()
-                        .into(imageView)
-                    this!!.addView(imageView)
-                }
-                else -> {
-                    val imageView = createIcon(view.context, chatStyle.embedded_window)
-                    this!!.addView(imageView)
-                }
-            }
-            setBubbleIconConstraint(this)
-            addView(onlineIcon(view.context))
-            setOnlineIconConstraint(this)
-        }
-    }
-
-    private fun createCircularLayout(view: View, chatStyle: ChatStyle): ConstraintLayout? {
         val layout = view.findViewById<ConstraintLayout>(R.id.bubble_layout)
+        val circularIconView =
+            LayoutInflater.from(view.context).inflate(R.layout.circular_icon, null)
+        val circularIconLayout =
+            circularIconView.findViewById<LinearLayout>(R.id.circular_bubble_layout)
+        circularIconLayout.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
         val unwrappedDrawable =
             AppCompatResources.getDrawable(view.context, R.drawable.circular_bubble_bg)
         val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
         if (wrappedDrawable != null) {
             DrawableCompat.setTint(wrappedDrawable, Color.parseColor("#${chatStyle.chead_color}"))
         }
-        view.background = wrappedDrawable
-        return layout
+        circularIconLayout.background = wrappedDrawable
+        configureCircularBubbleType(circularIconLayout, chatStyle)
+        layout.addView(circularIconView)
+        setBubbleIconConstraint(layout)
+        layout.addView(onlineIcon(view))
+        setOnlineIconConstraint(layout)
     }
 
-    private fun onlineIcon(context: Context): LinearLayout {
-        val icon = LinearLayout(context)
-        icon.id = R.id.status
-        val width = ScreenUtil().getScreenWidth(context) / 5
-        icon.layoutParams = LinearLayout.LayoutParams(width, width)
-        icon.setBackgroundResource(R.drawable.offline_icon)
-        return icon
+    private fun configureCircularBubbleType(
+        circularIconLayout: LinearLayout,
+        chatStyle: ChatStyle
+    ) {
+
+        val icon = circularIconLayout.findViewById<ImageView>(R.id.icon)
+        val text = circularIconLayout.findViewById<TextView>(R.id.text)
+        val customIcon = circularIconLayout.findViewById<CircularImageView>(R.id.custom_icon)
+        when (chatStyle.embedded_window) {
+            CircularBubbleType.CUSTOM_URL.type -> {
+                icon.visibility = View.GONE
+                text.visibility = View.GONE
+                customIcon.visibility = View.VISIBLE
+                customIcon.layoutParams.width = ScreenUtil().getCustomImageWidth(customIcon.context)
+                customIcon.layoutParams.height = ScreenUtil().getCustomImageWidth(customIcon.context)
+                Glide
+                    .with(circularIconLayout.context)
+                    .load("${BaseUrl.ImageUrl}${chatStyle.custom_chat_bubble}")
+                    .centerCrop()
+                    .into(customIcon)
+            }
+
+            CircularBubbleType.TEXT_HELP.type -> {
+                icon.visibility = View.GONE
+                customIcon.visibility = View.GONE
+                text.visibility = View.VISIBLE
+                text.typeface = Typeface.DEFAULT_BOLD
+                text.text = text.context.getString(R.string.help)
+            }
+            CircularBubbleType.TEXT_CHAT.type -> {
+                icon.visibility = View.GONE
+                customIcon.visibility = View.GONE
+                text.visibility = View.VISIBLE
+                text.typeface = Typeface.DEFAULT_BOLD
+                text.text = text.context.getString(R.string.chat)
+            }
+            else -> {
+                text.visibility = View.GONE
+                customIcon.visibility = View.GONE
+                icon.visibility = View.VISIBLE
+                configureIcon(icon, chatStyle.embedded_window)
+            }
+        }
+    }
+
+
+    private fun configureIcon(icon: ImageView, type: String) {
+
+        when (type) {
+            CircularBubbleType.ICON_7.type -> {
+                icon.layoutParams.width = ScreenUtil().getCircularIconWidth(icon.context)
+                icon.layoutParams.height = ScreenUtil().getCircularIconWidth(icon.context)
+                icon.setImageResource(R.drawable.seven)
+            }
+            CircularBubbleType.ICON_10.type -> {
+                icon.layoutParams.width = ScreenUtil().getCircularIconWidth(icon.context)
+                icon.layoutParams.height = ScreenUtil().getCircularIconWidth(icon.context)
+                icon.setImageResource(R.drawable.ten)
+            }
+            CircularBubbleType.ICON_12.type -> {
+                icon.layoutParams.width = ScreenUtil().getCircularIconWidth(icon.context)
+                icon.layoutParams.height = ScreenUtil().getCircularIconWidth(icon.context)
+                icon.setImageResource(R.drawable.twelve)
+            }
+            CircularBubbleType.ICON_3.type -> {
+                icon.layoutParams.width = ScreenUtil().getCircularIconWidth(icon.context)
+                icon.layoutParams.height = ScreenUtil().getCircularIconWidth(icon.context)
+                icon.setImageResource(R.drawable.third)
+            }
+            CircularBubbleType.MALE.type -> {
+                icon.layoutParams.width = ScreenUtil().getImageViewBubbleWidth(icon.context)
+                icon.layoutParams.height = ScreenUtil().getImageViewBubbleWidth(icon.context)
+                icon.setImageResource(R.drawable.male)
+            }
+            CircularBubbleType.FEMALE.type -> {
+                icon.layoutParams.width = ScreenUtil().getImageViewBubbleWidth(icon.context)
+                icon.layoutParams.height = ScreenUtil().getImageViewBubbleWidth(icon.context)
+                icon.setImageResource(R.drawable.female)
+            }
+
+        }
+    }
+
+    private fun onlineIcon(view: View): View? {
+        val iconLayout =
+            LayoutInflater.from(view.context).inflate(R.layout.online_status_layout, null)
+        val width = ScreenUtil().getScreenWidth(view.context) / 5
+        iconLayout.layoutParams = LinearLayout.LayoutParams(width, width)
+        return iconLayout
     }
 
     private fun setOnlineIconConstraint(circularView: ConstraintLayout) {
         val constraintSet = ConstraintSet()
         constraintSet.clone(circularView)
         constraintSet.connect(
-            R.id.status,
+            R.id.status_layout,
             ConstraintSet.TOP,
             ConstraintSet.PARENT_ID,
             ConstraintSet.TOP
         )
         constraintSet.connect(
-            R.id.status,
+            R.id.status_layout,
             ConstraintSet.RIGHT,
             ConstraintSet.PARENT_ID,
             ConstraintSet.RIGHT
         )
-        constraintSet.setMargin(R.id.status, ConstraintSet.TOP, 20)
-        constraintSet.setMargin(R.id.status, ConstraintSet.RIGHT, 20)
+        constraintSet.setMargin(R.id.status_layout, ConstraintSet.TOP, 20)
+        constraintSet.setMargin(R.id.status_layout, ConstraintSet.RIGHT, 20)
         constraintSet.applyTo(circularView)
     }
 
@@ -132,71 +181,5 @@ internal class CircularBubble() {
             ConstraintSet.LEFT
         )
         constraintSet.applyTo(circularView)
-    }
-
-    private fun createImageView(context: Context): ImageView {
-        val imageView = ImageView(context)
-        imageView.id = R.id.bubble_icon
-        val layoutParams = LinearLayout.LayoutParams(
-            ScreenUtil().getImageViewBubbleWidth(context),
-            ScreenUtil().getImageViewBubbleWidth(context)
-        )
-        imageView.layoutParams = layoutParams
-        return imageView
-    }
-
-    private fun createCircularImageView(context: Context): CircularImageView {
-        val imageView = CircularImageView(context)
-        imageView.id = R.id.bubble_icon
-        val layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        imageView.layoutParams = layoutParams
-//        imageView.borderWidth = 0F
-        return imageView
-    }
-
-    private fun createTextView(context: Context, text: String): TextView {
-        val textView = TextView(context)
-        textView.id = R.id.bubble_icon
-        textView.layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        textView.text = text
-        textView.textSize = 16F
-        textView.setTextColor(Color.WHITE)
-        textView.typeface = Typeface.DEFAULT_BOLD
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-            textView.gravity = Gravity.CENTER
-        }
-        return textView
-    }
-
-    private fun createIcon(context: Context, type: String): ImageView {
-        val imageView = ImageView(context)
-        imageView.id = R.id.bubble_icon
-        val layoutParams = LinearLayout.LayoutParams(
-            ScreenUtil().getCircularIconWidth(context),
-            ScreenUtil().getCircularIconWidth(context)
-        )
-        imageView.layoutParams = layoutParams
-        when (type) {
-            CircularBubbleType.ICON_7.type -> {
-                imageView.setImageResource(R.drawable.seven)
-            }
-            CircularBubbleType.ICON_10.type -> {
-                imageView.setImageResource(R.drawable.ten)
-            }
-            CircularBubbleType.ICON_12.type -> {
-                imageView.setImageResource(R.drawable.twelve)
-            }
-            CircularBubbleType.ICON_3.type -> {
-                imageView.setImageResource(R.drawable.third)
-            }
-        }
-        return imageView
     }
 }
