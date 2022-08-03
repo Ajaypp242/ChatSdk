@@ -58,7 +58,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.Ajaypp242'
                 artifactId = 'ChatSdk'
-                version = '0.0.1'
+                version = '0.0.2'
             }
         }
     }
