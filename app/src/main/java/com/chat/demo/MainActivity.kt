@@ -20,17 +20,6 @@ class MainActivity : AppCompatActivity() {
         val ll = findViewById<LinearLayout>(R.id.ll)
         val bubble = ProProfsChat(this, liveSiteId).init()
         ll.addView(bubble)
-        testApi()
-
-    }
-
-    fun testApi(){
-       val jsonObject = "{'proprofs_language_id':'123'}"
-
-        val gson = Gson()
-    val res =    gson.fromJson<Response>(jsonObject,Response::class.java)
-        Log.d("response",res.toString())
-
     }
 
 }

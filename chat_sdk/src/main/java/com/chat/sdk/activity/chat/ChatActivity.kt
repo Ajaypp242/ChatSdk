@@ -70,7 +70,7 @@ internal class ChatActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         ProProfsChat.messages = adapter.messages
-        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit)
     }
 
     private fun initViewModal() {
@@ -198,7 +198,7 @@ internal class ChatActivity : AppCompatActivity() {
             sendMessage(activityChatBinding.messageBox.text.toString())
             activityChatBinding.messageBox.setText("")
         }
-        activityChatBinding.messageBox.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+        activityChatBinding.messageBox.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 sendMessage(activityChatBinding.messageBox.text.toString())
                 activityChatBinding.messageBox.setText("")
@@ -323,7 +323,7 @@ internal class ChatActivity : AppCompatActivity() {
         minimize.setOnClickListener {
             ProProfsChat.messages = adapter.messages
             finish()
-            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit)
         }
     }
 
@@ -349,9 +349,9 @@ internal class ChatActivity : AppCompatActivity() {
     private fun closeChatAlert() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(chatSettingData?.static_language?.closing_text)
-        builder.setPositiveButton(chatSettingData?.static_language?.continue_text) { dialog, which ->
+        builder.setPositiveButton(chatSettingData?.static_language?.continue_text) { _, _ ->
         }
-        builder.setNegativeButton(chatSettingData?.static_language?.end_chat_text) { dialog, which ->
+        builder.setNegativeButton(chatSettingData?.static_language?.end_chat_text) { _, _ ->
             closeChat()
         }
         builder.show()

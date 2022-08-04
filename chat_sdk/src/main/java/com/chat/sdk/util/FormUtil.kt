@@ -104,7 +104,7 @@ internal class FormUtil {
         return formSubmitValue
     }
 
-    fun starRating(count: Int, context: Context, color: String, stars: kotlin.Array<ImageView>, resId:Int) {
+    fun starRating(count: Int, context: Context, color: String, stars: Array<ImageView>, resId:Int) {
         val fillUnwrappedDrawable =
             AppCompatResources.getDrawable(context, resId)
         val fillWrappedDrawable = fillUnwrappedDrawable?.let { DrawableCompat.wrap(it) }

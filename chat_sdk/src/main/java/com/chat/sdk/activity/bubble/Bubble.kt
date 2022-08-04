@@ -25,11 +25,11 @@ internal class Bubble(context: Context) : FrameLayout(context) {
 
     private fun createBubble(context: Context): ConstraintLayout {
         val bubble = ConstraintLayout(context)
-        val layoutParams = ConstraintLayout.LayoutParams(
-            ScreenUtil().getCircularBubbleWidth(context),
-            ScreenUtil().getCircularBubbleWidth(context)
-        )
-        bubble.layoutParams = layoutParams
+//        val layoutParams = ConstraintLayout.LayoutParams(
+//            ScreenUtil().getCircularBubbleWidth(context),
+//            ScreenUtil().getCircularBubbleWidth(context)
+//        )
+//        bubble.layoutParams = layoutParams
         bubble.id = R.id.bubble_layout
         return bubble
     }

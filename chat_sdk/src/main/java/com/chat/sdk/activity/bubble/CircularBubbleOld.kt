@@ -19,7 +19,7 @@ import com.chat.sdk.network.BaseUrl
 import com.chat.sdk.util.ScreenUtil
 import com.mikhaellopez.circularimageview.CircularImageView
 
-internal class CircularBubbleOld() {
+internal class CircularBubbleOld{
     fun configureCircularBubble(view: View, chatStyle: ChatStyle) {
         val circularView = createCircularLayout(view, chatStyle)
         with(circularView) {
@@ -78,8 +78,8 @@ internal class CircularBubbleOld() {
     private fun onlineIcon(context: Context): LinearLayout {
         val icon = LinearLayout(context)
         icon.id = R.id.status
-        val width = ScreenUtil().getScreenWidth(context) / 5
-        icon.layoutParams = LinearLayout.LayoutParams(width, width)
+//        val width = ScreenUtil().getScreenWidth(context) / 5
+//        icon.layoutParams = LinearLayout.LayoutParams(width, width)
         icon.setBackgroundResource(R.drawable.offline_icon)
         return icon
     }
@@ -137,11 +137,11 @@ internal class CircularBubbleOld() {
     private fun createImageView(context: Context): ImageView {
         val imageView = ImageView(context)
         imageView.id = R.id.bubble_icon
-        val layoutParams = LinearLayout.LayoutParams(
-            ScreenUtil().getImageViewBubbleWidth(context),
-            ScreenUtil().getImageViewBubbleWidth(context)
-        )
-        imageView.layoutParams = layoutParams
+//        val layoutParams = LinearLayout.LayoutParams(
+//            ScreenUtil().getImageViewBubbleWidth(context),
+//            ScreenUtil().getImageViewBubbleWidth(context)
+//        )
+//        imageView.layoutParams = layoutParams
         return imageView
     }
 
@@ -178,11 +178,11 @@ internal class CircularBubbleOld() {
     private fun createIcon(context: Context, type: String): ImageView {
         val imageView = ImageView(context)
         imageView.id = R.id.bubble_icon
-        val layoutParams = LinearLayout.LayoutParams(
-            ScreenUtil().getCircularIconWidth(context),
-            ScreenUtil().getCircularIconWidth(context)
-        )
-        imageView.layoutParams = layoutParams
+//        val layoutParams = LinearLayout.LayoutParams(
+//            ScreenUtil().getCircularIconWidth(context),
+//            ScreenUtil().getCircularIconWidth(context)
+//        )
+//        imageView.layoutParams = layoutParams
         when (type) {
             CircularBubbleType.ICON_7.type -> {
                 imageView.setImageResource(R.drawable.seven)

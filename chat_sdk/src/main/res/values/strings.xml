@@ -4,4 +4,6 @@
     <string name="required_icon">*</string>
     <string name="select">Select</string>
     <string name="type">Type Something…</string>
+    <string name="sent">Sent</string>
+    <string name="seen">Seen</string>
 </resources>

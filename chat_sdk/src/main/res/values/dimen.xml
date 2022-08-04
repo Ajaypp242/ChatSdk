@@ -7,5 +7,9 @@
     <dimen name="message_text_size">16sp</dimen>
     <dimen name="form_error_msg_size">12sp</dimen>
     <dimen name="radius_corner">300dp</dimen>
+    <dimen name="margin3">3dp</dimen>
+    <dimen name="margin4">4dp</dimen>
+    <dimen name="margin2">2dp</dimen>
+    <dimen name="margin1">1dp</dimen>
 
 </resources>
