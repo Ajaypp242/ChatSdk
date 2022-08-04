@@ -87,13 +87,20 @@ internal class FormActivity : AppCompatActivity() {
                 activityFormBinding.formRecyclerView
             )
             if (res.valid) {
-                if (currentFormType == FormType.PRE_CHAT) {
-                    preSubmitAction()
-                } else if (currentFormType == FormType.POST_CHAT) {
-                    val transcriptId = intent.getIntExtra("transcriptId",0)
-                    postSubmitAction(transcriptId)
-                } else if (currentFormType == FormType.OFFLINE) {
-                    offlineSubmitAction()
+                when (currentFormType) {
+                    FormType.PRE_CHAT -> {
+                        preSubmitAction()
+                    }
+                    FormType.POST_CHAT -> {
+                        val transcriptId = intent.getIntExtra("transcriptId",0)
+                        postSubmitAction(transcriptId)
+                    }
+                    FormType.OFFLINE -> {
+                        offlineSubmitAction()
+                    }
+                    else -> {
+                        offlineSubmitAction()
+                    }
                 }
             }
         }
@@ -316,12 +323,12 @@ internal class FormActivity : AppCompatActivity() {
         )
         alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         alertDialog.show()
-        val messageView: TextView = alertDialog.findViewById<TextView>(android.R.id.message)!!
+        val messageView: TextView = alertDialog.findViewById(android.R.id.message)!!
         messageView.gravity = Gravity.CENTER
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val formSubmitValue = FormUtil().getFormValues(adapter.chatFormField!!,"off_pp_fld_")
             try {
-                val response = ApiAdapter.apiClient.sendOfflineMessage(
+                ApiAdapter.apiClient.sendOfflineMessage(
                     "0",
                     chatSettingData?.proprofs_session,
                     chatSettingData?.proprofs_language_id,
@@ -339,8 +346,12 @@ internal class FormActivity : AppCompatActivity() {
                     "chat_sdk"
                 )
                 alertDialog.dismiss()
-                alertAfterOfflineSubmit()
+                CoroutineScope(Dispatchers.Main).launch {
+                    alertAfterOfflineSubmit()
+                }
+
             } catch (e: Exception) {
+
             }
         }
     }
@@ -364,7 +375,7 @@ internal class FormActivity : AppCompatActivity() {
     private fun alertAfterOfflineSubmit() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(chatSettingData?.chat_header_text?.aftermail)
-        builder.setNegativeButton("Ok ") { dialog, which ->
+        builder.setNegativeButton("Ok ") { _, _ ->
             finish()
         }
         builder.show()

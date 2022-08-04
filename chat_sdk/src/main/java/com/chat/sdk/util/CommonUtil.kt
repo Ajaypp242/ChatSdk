@@ -95,6 +95,7 @@ internal class CommonUtil {
         return date.format(currentLocalTime).trim('+')
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun getCurrentTime(): String {
         val dateFormat: DateFormat = SimpleDateFormat("hh:mm a")
         return dateFormat.format(Date())

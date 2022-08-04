@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:id="@+id/status_layout"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal">
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/online_icon"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/offline_icon"
         android:id="@+id/operator_status" />
 </LinearLayout>

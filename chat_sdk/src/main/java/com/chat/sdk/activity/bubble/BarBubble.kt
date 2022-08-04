@@ -1,5 +1,6 @@
 package com.chat.sdk.activity.bubble
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -15,19 +16,17 @@ import com.chat.sdk.R
 import com.chat.sdk.modal.ChatStyle
 import com.chat.sdk.util.ScreenUtil
 
-internal class BarBubble() {
+internal class BarBubble {
+    @SuppressLint("InflateParams")
     fun configureBarBubble(view: View, chatStyle: ChatStyle, bubbleText: String) {
         val bubbleView = view.findViewById<ConstraintLayout>(R.id.bubble_layout)
         val layoutParams = bubbleView.layoutParams
-        layoutParams.width = ScreenUtil().getBarBubbleWidth(view.context)
+        layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         val barBubble = LayoutInflater.from(view.context).inflate(R.layout.bubble_bar, null)
         val barBubbleLayout = barBubble.findViewById<LinearLayout>(R.id.bar_bubble_layout)
         val bubbleTextView = barBubbleLayout.findViewById<TextView>(R.id.bubble_text)
         bubbleTextView.text = bubbleText
-        barBubbleLayout.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
         val unwrappedDrawable =
             AppCompatResources.getDrawable(view.context, R.drawable.bar_bubble_bg)
         val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
@@ -41,10 +40,11 @@ internal class BarBubble() {
         setOnlineIconConstraint(bubbleView)
     }
 
+    @SuppressLint("InflateParams")
     private fun onlineIcon(context: Context): View? {
         val iconLayout = LayoutInflater.from(context).inflate(R.layout.online_status_layout, null)
-        val width = ScreenUtil().getScreenWidth(context) / 4
-        iconLayout.layoutParams = LinearLayout.LayoutParams(width, width)
+//        val width = ScreenUtil().getScreenWidth(context) / 4
+        iconLayout.layoutParams = LinearLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         return iconLayout
     }
 

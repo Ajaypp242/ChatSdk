@@ -14,7 +14,7 @@ import com.chat.sdk.R
 import com.chat.sdk.modal.ChatFormField
 
 
-internal class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
+internal class FormAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
     ChildAdaptorResponse {
     var chatFormField: List<ChatFormField>? = null
     private var context: Context? = null
@@ -35,11 +35,6 @@ internal class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
             return chatFormField!!.size
         }
         return 0
-    }
-    fun clear() {
-        if (chatFormField != null) {
-            notifyItemRangeRemoved(0, itemCount)
-        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -104,7 +99,7 @@ internal class FormAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
             }
             R.layout.form_field_dropdown -> {
                 val select = holder.itemView.findViewById<TextView>(R.id.value)
-                select.setOnClickListener { it ->
+                select.setOnClickListener {
                     val options = chatFormField!![position].sel_item.split(",").toTypedArray()
                     openDropdownDialog(options, it.context, position, select)
                 }

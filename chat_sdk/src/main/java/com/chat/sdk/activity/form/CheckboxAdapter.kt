@@ -10,7 +10,7 @@ import com.chat.sdk.R
 internal class CheckboxAdapter(private val childAdaptorResponse: ChildAdaptorResponse) :
     RecyclerView.Adapter<CheckboxAdapter.CheckboxViewHolder>() {
     private var options: List<String>? = null
-    var response=ArrayList<String>()
+    private var response=ArrayList<String>()
     private var parentPosition: Int = -1
     fun setOptions(options: List<String>, parentPosition: Int) {
         this.options = options

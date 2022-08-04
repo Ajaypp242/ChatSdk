@@ -35,7 +35,7 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
 
     fun updateVisitorLastMessageId(id:String){
         if(messages != null){
-            this.messages!!.get(messages!!.size -1).sno = id
+            this.messages!![messages!!.size -1].sno = id
             notifyDataSetChanged()
         }
     }
@@ -88,10 +88,10 @@ internal class ChatAdapter(private val chatStyle: ChatStyle, private val context
                 val status: TextView = holder.itemView.findViewById(R.id.status)
                 val statusVal = messages?.get(position)?.msg_status
                 if(statusVal == "2"){
-                    status.text = "Seen"
+                    status.text = context.getString(R.string.seen)
                     status.setTextColor(Color.parseColor("#11e711"))
                 } else {
-                    status.text = "Sent"
+                    status.text = context.getString(R.string.sent)
                     status.setTextColor(Color.GRAY)
                 }
 

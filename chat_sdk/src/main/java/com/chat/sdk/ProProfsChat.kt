@@ -20,7 +20,7 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
     ProProfsChatInterface {
     private lateinit var bubble: View
     private var chatSettingData: ChatSettingData? = null
-    private var operatorStatus: OperatorStatusType = OperatorStatusType.OFFLINE
+    private var operatorStatus: OperatorStatusType = OperatorStatusType.NONE
     private lateinit var sharedPreferences: SharedPreferences
     private var chatStatus: String? = null
 

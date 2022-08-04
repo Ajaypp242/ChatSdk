@@ -40,7 +40,7 @@ internal class ChatViewModal : ViewModel() {
     }
 }
 
-class ChatViewModelFactory() : ViewModelProvider.Factory {
+class ChatViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChatViewModal::class.java)) {
             @Suppress("UNCHECKED_CAST")
