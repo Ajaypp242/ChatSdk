@@ -45,7 +45,7 @@ internal class ScreenUtil {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, size, context.resources.displayMetrics
 
-        ) as Int
+        ).toInt()
     }
 
     fun getPixelValue(context: Context, dimenId: Float): Int {
