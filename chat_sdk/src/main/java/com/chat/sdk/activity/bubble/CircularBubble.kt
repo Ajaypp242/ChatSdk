@@ -1,5 +1,6 @@
 package com.chat.sdk.activity.bubble
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.view.LayoutInflater
@@ -17,7 +18,8 @@ import com.chat.sdk.network.BaseUrl
 import com.chat.sdk.util.ScreenUtil
 import com.mikhaellopez.circularimageview.CircularImageView
 
-internal class CircularBubble() {
+internal class CircularBubble {
+    @SuppressLint("InflateParams")
     fun configureCircularBubble(view: View, chatStyle: ChatStyle) {
         val layout = view.findViewById<ConstraintLayout>(R.id.bubble_layout)
         val circularIconView =
@@ -78,53 +80,51 @@ internal class CircularBubble() {
                 text.typeface = Typeface.DEFAULT_BOLD
                 text.text = text.context.getString(R.string.chat)
             }
-            else -> {
+            CircularBubbleType.MALE.type -> {
                 text.visibility = View.GONE
                 customIcon.visibility = View.GONE
                 icon.visibility = View.VISIBLE
-                configureIcon(icon, chatStyle.embedded_window)
-            }
-        }
-    }
-
-
-    private fun configureIcon(icon: ImageView, type: String) {
-
-        when (type) {
-            CircularBubbleType.ICON_7.type -> {
-                icon.layoutParams.width = ScreenUtil().getCircularIconWidth(icon.context)
-                icon.layoutParams.height = ScreenUtil().getCircularIconWidth(icon.context)
-                icon.setImageResource(R.drawable.seven)
-            }
-            CircularBubbleType.ICON_10.type -> {
-                icon.layoutParams.width = ScreenUtil().getCircularIconWidth(icon.context)
-                icon.layoutParams.height = ScreenUtil().getCircularIconWidth(icon.context)
-                icon.setImageResource(R.drawable.ten)
-            }
-            CircularBubbleType.ICON_12.type -> {
-                icon.layoutParams.width = ScreenUtil().getCircularIconWidth(icon.context)
-                icon.layoutParams.height = ScreenUtil().getCircularIconWidth(icon.context)
-                icon.setImageResource(R.drawable.twelve)
-            }
-            CircularBubbleType.ICON_3.type -> {
-                icon.layoutParams.width = ScreenUtil().getCircularIconWidth(icon.context)
-                icon.layoutParams.height = ScreenUtil().getCircularIconWidth(icon.context)
-                icon.setImageResource(R.drawable.third)
-            }
-            CircularBubbleType.MALE.type -> {
                 icon.layoutParams.width = ScreenUtil().getImageViewBubbleWidth(icon.context)
                 icon.layoutParams.height = ScreenUtil().getImageViewBubbleWidth(icon.context)
                 icon.setImageResource(R.drawable.male)
             }
             CircularBubbleType.FEMALE.type -> {
+                text.visibility = View.GONE
+                customIcon.visibility = View.GONE
+                icon.visibility = View.VISIBLE
                 icon.layoutParams.width = ScreenUtil().getImageViewBubbleWidth(icon.context)
                 icon.layoutParams.height = ScreenUtil().getImageViewBubbleWidth(icon.context)
                 icon.setImageResource(R.drawable.female)
             }
-
+            else -> {
+                text.visibility = View.GONE
+                customIcon.visibility = View.GONE
+                icon.visibility = View.VISIBLE
+                icon.layoutParams.width = ScreenUtil().getCircularIconWidth(icon.context)
+                icon.layoutParams.height = ScreenUtil().getCircularIconWidth(icon.context)
+                configureIcon(icon, chatStyle)
+            }
         }
     }
 
+    private fun configureIcon(icon: ImageView, chatStyle: ChatStyle) {
+        when (chatStyle.embedded_window) {
+            CircularBubbleType.ICON_7.type -> {
+                icon.setImageResource(R.drawable.seven)
+            }
+            CircularBubbleType.ICON_10.type -> {
+                icon.setImageResource(R.drawable.ten)
+            }
+            CircularBubbleType.ICON_12.type -> {
+                icon.setImageResource(R.drawable.twelve)
+            }
+            CircularBubbleType.ICON_3.type -> {
+                icon.setImageResource(R.drawable.third)
+            }
+        }
+    }
+
+    @SuppressLint("InflateParams")
     private fun onlineIcon(view: View): View? {
         val iconLayout =
             LayoutInflater.from(view.context).inflate(R.layout.online_status_layout, null)
