@@ -30,8 +30,7 @@ internal class CircularBubble {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-        val unwrappedDrawable =
-            AppCompatResources.getDrawable(view.context, R.drawable.circular_bubble_bg)
+        val unwrappedDrawable = AppCompatResources.getDrawable(view.context, R.drawable.circular_bubble_bg)
         val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
         if (wrappedDrawable != null) {
             DrawableCompat.setTint(wrappedDrawable, Color.parseColor("#${chatStyle.chead_color}"))

@@ -11,6 +11,7 @@ import com.chat.sdk.activity.form.FormActivity
 import com.chat.sdk.modal.*
 import com.chat.sdk.network.ApiAdapter
 import com.chat.sdk.network.GetChatData
+import com.chat.sdk.util.CommonUtil
 import com.chat.sdk.util.Constant
 import com.chat.sdk.util.Session
 import kotlinx.coroutines.*
@@ -45,6 +46,8 @@ class ProProfsChat(private val context: Context, private val site_id: String) :
         CoroutineScope(Dispatchers.Main).launch {
             getData(sessionId, sharedPreferences)
         }
+        CommonUtil().getTimeZone()
+        CommonUtil().getTimeZone2()
         return bubble
     }
 

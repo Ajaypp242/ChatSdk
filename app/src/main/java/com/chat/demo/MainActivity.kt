@@ -1,16 +1,9 @@
 package com.chat.demo
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.chat.sdk.ProProfsChat
-import com.google.android.material.internal.ContextUtils.getActivity
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import java.io.InputStream
-
 
 class MainActivity : AppCompatActivity() {
     private var liveSiteId: String = "MXd4bDEwYzFRbW5oNVpBaDI4WUQ1QT09"
