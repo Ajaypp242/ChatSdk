@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -77,22 +78,20 @@ internal class CommonUtil {
     }
 
     fun getTimeZone(): Int {
-        val timezone = Date().timezoneOffset
-        if(timezone != 0){
-            return -(timezone)
-        }
+//        val timezone = Date().timezoneOffset
+//        Log.i("timezone",timezone.toString())
+//        if(timezone != 0){
+//            return -(timezone)
+//        }
         return 0
     }
 
     @SuppressLint("SimpleDateFormat")
     fun getTimeZone2(): String {
-        val calendar = Calendar.getInstance(
-            TimeZone.getTimeZone("GMT"),
-            Locale.getDefault()
-        )
-        val currentLocalTime = calendar.time
-        val date: DateFormat = SimpleDateFormat("Z")
-        return date.format(currentLocalTime).trim('+')
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault())
+        val timeZone = SimpleDateFormat("Z").format(calendar.time)
+        Log.i("timezone",timeZone.substring(0, 3) + ":" + timeZone.substring(3, 5))
+        return timeZone.substring(0, 3) + ":" + timeZone.substring(3, 5)
     }
 
     @SuppressLint("SimpleDateFormat")
