@@ -78,21 +78,21 @@ internal class CommonUtil {
     }
 
     fun getTimeZone(): Int {
-//        val timezone = Date().timezoneOffset
-//        Log.i("timezone",timezone.toString())
-//        if(timezone != 0){
-//            return -(timezone)
-//        }
+        val timezone = Date().timezoneOffset
+        Log.i("timezone",timezone.toString())
+        if(timezone != 0){
+            return -(timezone)
+        }
         return 0
     }
 
-    @SuppressLint("SimpleDateFormat")
-    fun getTimeZone2(): String {
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault())
-        val timeZone = SimpleDateFormat("Z").format(calendar.time)
-        Log.i("timezone",timeZone.substring(0, 3) + ":" + timeZone.substring(3, 5))
-        return timeZone.substring(0, 3) + ":" + timeZone.substring(3, 5)
-    }
+//    @SuppressLint("SimpleDateFormat")
+//    fun getTimeZone2(): String {
+//        val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault())
+//        val timeZone = SimpleDateFormat("Z").format(calendar.time)
+//        Log.i("timezone",timeZone.substring(0, 3) + ":" + timeZone.substring(3, 5))
+//        return timeZone.substring(0, 3) + ":" + timeZone.substring(3, 5)
+//    }
 
     @SuppressLint("SimpleDateFormat")
     fun getCurrentTime(): String {

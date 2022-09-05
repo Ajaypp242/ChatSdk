@@ -3,6 +3,7 @@ package com.chat.sdk.modal
 import java.io.Serializable
 
 internal data class ChatSettingData(
+    val site_setting:SiteSettings,
     val chat_header_text: ChatHeaderText,
     val chat_style: ChatStyle,
     val chat_style_extra: ChatStyleExtra,

@@ -65,6 +65,7 @@ internal class ChatActivity : AppCompatActivity() {
         setLayoutManager()
         initViewModal()
         setFooter()
+
     }
 
     override fun onBackPressed() {
@@ -212,6 +213,9 @@ internal class ChatActivity : AppCompatActivity() {
             activityChatBinding.attachment.visibility = GONE
         }
         onFileChooseResult()
+        if(chatSettingData?.site_setting?.branding == "1"){
+            activityChatBinding.brandingLayout.visibility = VISIBLE
+        }
     }
 
 

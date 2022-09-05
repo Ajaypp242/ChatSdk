@@ -14,7 +14,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.drawable.DrawableCompat
 import com.chat.sdk.R
 import com.chat.sdk.modal.ChatStyle
-import com.chat.sdk.util.ScreenUtil
 
 internal class BarBubble {
     @SuppressLint("InflateParams")
