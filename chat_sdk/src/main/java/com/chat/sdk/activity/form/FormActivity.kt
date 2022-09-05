@@ -54,11 +54,19 @@ internal class FormActivity : AppCompatActivity() {
         addToolbar()
         setLayoutManager()
         initViewModal()
+        footer()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit)
+    }
+
+    private fun footer(){
+        if(chatSettingData?.site_setting?.branding == "1"){
+            activityFormBinding.branding.layoutResource = R.layout.footer
+            activityFormBinding.branding.inflate()
+        }
     }
 
     private fun initViewModal() {
@@ -334,7 +342,6 @@ internal class FormActivity : AppCompatActivity() {
                     chatSettingData?.proprofs_language_id,
                     siteId,
                     "0",
-
                     formSubmitValue.name,
                     formSubmitValue.email,
                     formSubmitValue.dynamicStringParams,

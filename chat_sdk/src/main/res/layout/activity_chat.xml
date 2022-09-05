@@ -108,8 +108,9 @@
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/edit_text_border"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/branding_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
@@ -130,7 +131,7 @@
             android:layout_width="0dp"
             android:layout_margin="5dp"
             android:id="@+id/action_btn_layout"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/branding"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:orientation="horizontal"
@@ -154,7 +155,17 @@
                 android:src="@drawable/ic_send"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/branding_layout"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <include layout="@layout/footer"/>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
